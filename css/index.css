@@ -1,0 +1,95 @@
+:root {
+  --size: 100px;
+  --size_large: 200px;
+  --colour_border: #347EB3;
+}
+* { box-sizing: border-box; }
+body { font-family: sans-serif; }
+
+/* ---- grid ---- */
+
+.grid {
+background: #DDD;
+max-width: 1730px;
+margin-left:auto;
+margin-right: auto;
+margin-top:5%;
+}
+
+/* clear fix */
+.grid:after {
+content: '';
+display: block;
+clear: both;
+}
+
+/* ---- .grid-item ---- */
+
+.grid-item {
+float: left;
+width: var(--size);
+height: var(--size);
+background: #FFF;
+border: 2px solid hsla(0, 0%, 0%, 0.5);
+}
+
+.selected{
+    outline-color: var(--colour_border); outline-style: solid; outline-width: 4px; outline-offset: -4px;
+}
+
+.selected::before{
+  content: '';
+  position: absolute;
+  top:2px;
+  right:2px;
+  z-index:1;
+  width:0;
+  height:0;
+  border-width: 2em 0 0 2em;
+  border-style: solid;
+  border-color: var(--colour_border) transparent;
+  display:block;
+}
+
+.grid-item--horizontal { width: var(--size_large); }
+.grid-item--vertical { height: var(--size_large); }
+.grid-item--large { width: var(--size_large); height: var(--size_large); }
+
+/*.grid-item:hover {
+border-color: hsla(0, 0%, 100%, 0.5);
+cursor: move;
+}*/
+
+.grid-item.is-dragging,
+.grid-item.is-positioning-post-drag {
+background: #C90;
+z-index: 2;
+}
+
+.grid-sizer{
+width: var(--size);
+}
+
+.packery-drop-placeholder {
+outline: 3px dashed hsla(0, 0%, 0%, 0.5);
+outline-offset: -6px;
+-webkit-transition: -webkit-transform 0.2s;
+        transition: transform 0.2s;
+}
+
+
+/*
+#colourSelector {
+position: relative;
+width: 36px;
+height: 36px;
+background: url('../images/select.png');
+}
+#colourSelector div {
+position: absolute;
+top: 4px;
+left: 4px;
+width: 28px;
+height: 28px;
+background: url('../images/select.png') center;
+}*/

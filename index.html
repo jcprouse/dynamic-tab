@@ -1,0 +1,56 @@
+<html>
+<head>
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/colorpicker.css" rel="stylesheet" />
+  <link href="css/index.css" rel="stylesheet" />
+</head>
+<body>
+<div class="grid" id="grid">
+  <div class="grid-sizer"></div>
+</div>
+
+<input type="button" value="Add" id="btnAdd"/>
+
+<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a class="nav-link" id="nav-delete" href="#">Delete</a></li>
+      <li class="nav-item dropup">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Size</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item dropdown-size" data-item-id="normal" href="#">Normal</a>
+          <a class="dropdown-item dropdown-size" data-item-id="horizontal" href="#">Horizontal</a>
+          <a class="dropdown-item dropdown-size" data-item-id="vertical" href="#">Vertical</a>
+          <a class="dropdown-item dropdown-size" data-item-id="large" href="#">Large</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+      <li>
+        <form class="form-inline my-2 my-lg-0">
+          <label>Size baseline</label>
+          <input class="form-control mr-sm-2" type="text" id="txtSize">
+        </form>
+      </li>
+      <li><input class="jscolor {onFineChange:'update(this)'} form-control mr-sm-2" value="ab2567" id="colourSelector" type="text"></li>
+      <li><input class="Form-control mr-sm-2" placeholder="url" id="txtUrl" type="text"></li>
+    </ul>
+    <input type="file" id="fileImport"/>
+    <button class="btn" id="btnExport">Export</button>
+    <button class="btn" id="btnCloseNav">Close</button>
+  </div>
+</nav>
+
+<script type="text/javascript" src="js/jquery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="js/packery/packery.pkgd.min.js"></script>
+<script type="text/javascript" src="js/packery/packery.custom.js"></script>
+<script type="text/javascript" src="js/packery/draggabilly.pkgd.min.js"></script>
+<script type="text/javascript" src="js/jscolor/jscolor.min.js"></script>
+<script type="text/javascript" src="js/services.js"></script>
+<script type="text/javascript" src="js/dao.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript" src="js/handlers.js"></script>
+</body>
+</html>
