@@ -1,6 +1,6 @@
 var $grid;
 
-var debug = false;
+var debug = true;
 var resetToStock = false;
 
 $( document ).ready(function() {
@@ -13,7 +13,7 @@ $( document ).ready(function() {
   for (var counter = 0; counter < tile_collection.length; counter++)
   {
     var tile = tile_collection[counter];
-    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" style="background-color:#'+tile.colour+'"></div>')
+    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" style="background-color:'+tile.colour+'"></div>')
   }
 
 
@@ -56,7 +56,7 @@ $( document ).ready(function() {
 
 function update(hex) {
   $('#colourSelector div').css('backgroundColor', "#"+hex);
-  NavService.previewColour(hex);
+  NavService.saveColour(hex);
 }
 
 

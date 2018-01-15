@@ -24,7 +24,7 @@ var TileService = {
       }
     }
     StorageDAO.set(this.key, JSON.stringify(tile_collection));
-    console.log(JSON.stringify(tile_collection));
+    log(JSON.stringify(tile_collection), "Tile collection updated");
   },
   delete: function(ID){
     var tile_collection = TileService.get();
@@ -36,7 +36,7 @@ var TileService = {
         break;
       }
     }
-    console.log(tile_collection);
+    log(tile_collection, "Tile record removed");
     StorageDAO.set(this.key, JSON.stringify(tile_collection));
   },
   saveLayout: function(positions){
@@ -83,6 +83,8 @@ var NavService = {
     $(".navbar").show();
   },
   hide: function(){
+    if (this.selectedItem != null)
+      $(this.selectedItem).toggleClass('selected');
     $(".navbar").hide();
   },
   delete: function() {
@@ -91,17 +93,22 @@ var NavService = {
     $grid.packery('remove',this.selectedItem);
     TileService.saveLayout();
   },
-  previewColour: function(colour){
+  /*previewColour: function(colour){
     $(this.selectedItem).css('backgroundColor', "#"+colour);
     this.selectedColour = colour;
-  },
-  saveColour: function(){
-    if (this.selectedColour != null)
-      TileService.update($(this.selectedItem).attr("data-item-id"),this.selectedColour)
+  },*/
+  saveColour: function(colour){
+    $(this.selectedItem).css('backgroundColor', "#"+colour);
+    this.selectedColour = colour;
+    //if (this.selectedColour != null) {
+    log("#"+this.selectedColour, "Saving colour");
+    TileService.update($(this.selectedItem).attr("data-item-id"),"#"+this.selectedColour)
+    //}
   },
   saveSize: function(size){
     $(this.selectedItem).attr('class','grid-item grid-item--'+size);
     $grid.packery('layout');
+    TileService.update($(this.selectedItem).attr("data-item-id"),this.selectedColour)
   }
 }
 
@@ -119,8 +126,8 @@ var ImportExportService = {
     var content = {tiles: TileService.get().tiles , layout: JSON.parse(TileService.getLayout()), id: IdService.get()};
     var contentAsString = JSON.stringify(content);
 
-    if (debug) log(contentAsString,"Export JSON");
-    else {
+    /*if (debug) log(contentAsString,"Export JSON");
+    else {*/
       let csvContent = "data:text/json;charset=utf-8,"+contentAsString;
 
       var encodedUri = encodeURI(csvContent);
@@ -130,6 +137,6 @@ var ImportExportService = {
       //document.body.appendChild(link); // Required for FF
 
       link.click(); // This will download the data file named "my_data.csv".
-    }
+    //}
   }
 }
