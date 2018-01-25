@@ -1,4 +1,4 @@
-var $grid;
+//var $grid;
 
 var debug = true;
 var resetToStock = false;
@@ -7,7 +7,7 @@ $( document ).ready(function() {
 
   if (resetToStock) reset();
 
-  var tile_collection = TileService.get().tiles;
+  var tile_collection = TileService.getAllTiles().tiles;
   log(tile_collection,"Tile collection on load");
 
   for (var counter = 0; counter < tile_collection.length; counter++)
@@ -24,28 +24,35 @@ $( document ).ready(function() {
   document.documentElement.style.setProperty(`--size_large`, (size * 2)+'px');
 
   // init Packery
-  $grid = $('.grid').packery({
+  //$grid = $('.grid').packery({
+  PackaryGrid.set(
+    $('.grid').packery({
     itemSelector: '.grid-item',
     columnWidth: '.grid-sizer',
     gutter: 4,
     //columnWidth:100,
     percentPosition: true,
     initLayout: false // disable initial layout
-  });
+    })
+  );
 
-  var initPositions = TileService.getLayout();
+  var initPositions = TileService.getAllTilesLayout();
 
   // init layout with saved positions
-  $grid.packery( 'initShiftLayout', initPositions, 'data-item-id' );
+  //$grid.packery( 'initShiftLayout', initPositions, 'data-item-id' );
+  PackaryGrid.get().packery( 'initShiftLayout', initPositions, 'data-item-id' );
 
-  $grid.find('.grid-item').each(initGridItem);
+  //$grid.find('.grid-item').each(initGridItem);
+  PackaryGrid.get().find('.grid-item').each(initGridItem);
 
   // save drag positions on event
-  $grid.on( 'dragItemPositioned', function() {
-    TileService.saveLayout();
+  //$grid.on( 'dragItemPositioned', function() {
+  PackaryGrid.get().on( 'dragItemPositioned', function() {
+    TileService.setAllTilesLayout();
   });
 
-  $grid.on( 'staticClick', '.grid-item', function( item ) {
+  //$grid.on( 'staticClick', '.grid-item', function( item ) {
+  PackaryGrid.get().on( 'staticClick', '.grid-item', function( item ) {
     var dataItemId = $(item.target.outerHTML).attr("data-item-id");
     log("ID: "+dataItemId,"Item clicked");
     //window.location = "https://www.bbc.co.uk"
@@ -56,18 +63,18 @@ $( document ).ready(function() {
 
 function update(hex) {
   $('#colourSelector div').css('backgroundColor', "#"+hex);
-  NavService.saveColour(hex);
+  NavigationService.setTileColour(hex);
 }
 
 
 var initGridItem = function( i, itemElem ) {
   // Make draggable
   var draggie = new Draggabilly( itemElem );
-  $grid.packery( 'bindDraggabillyEvents', draggie );
-
+  //$grid.packery( 'bindDraggabillyEvents', draggie );
+  PackaryGrid.get().packery( 'bindDraggabillyEvents', draggie );
   // Right click event
   $(itemElem).contextmenu(function(){
-    NavService.show(this);
+    NavigationService.selectTile(this);
     return false;
 
   })

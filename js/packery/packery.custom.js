@@ -1,3 +1,17 @@
+
+var $grid;
+var PackaryGrid = {
+  set: function(input){
+    $grid = input;
+  },
+  get: function(){
+    return $grid;
+  },
+  getShiftPositions: function(){
+    return $grid.packery( 'getShiftPositions', 'data-item-id' );
+  }
+}
+
 // get JSON-friendly data for items positions
 Packery.prototype.getShiftPositions = function( attrName ) {
   attrName = attrName || 'id';

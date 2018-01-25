@@ -1,33 +1,34 @@
-// Interations with the tiles
+// Interations with the tiles data
 var TileService = {
-  key: 'tiles',
+  tiles_key: 'tiles',
+  layout_key: 'dragPositions',
+  id_key: 'ID',
   default: '{"tiles":[]}',
-  get: function(){
-    return JSON.parse(StorageDAO.get(this.key) || this.default);
-  },
-  set: function(tile_collection){
-    StorageDAO.set(this.key, JSON.stringify(tile_collection));
-  },
-  create: function(newID){
-    var tile_collection = TileService.get();
+  create: function(){
+    var newID = parseInt((StorageDAO.get(this.id_key) || 1));
+    StorageDAO.set(this.id_key, (newID + 1));
+    var tile_collection = this.getAllTiles();
     tile_collection.tiles.push({dataitemid:newID,class:"grid-item"});
-    StorageDAO.set(this.key, JSON.stringify(tile_collection));
+    StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
   },
-  update: function(ID, colour){
-    var tile_collection = TileService.get();
+  update: function(ID, tile_config){
+    var tile_collection = this.getAllTiles();
     for (var counter = 0; counter < tile_collection.tiles.length; counter++)
     {
       if (tile_collection.tiles[counter].dataitemid == ID)
       {
-        tile_collection.tiles[counter].colour = colour;
+        if (tile_config.colour)
+          tile_collection.tiles[counter].colour = tile_config.colour;
+        if (tile_config.class)
+          tile_collection.tiles[counter].class = tile_config.class;
         break;
       }
     }
-    StorageDAO.set(this.key, JSON.stringify(tile_collection));
+    StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
     log(JSON.stringify(tile_collection), "Tile collection updated");
   },
   delete: function(ID){
-    var tile_collection = TileService.get();
+    var tile_collection = this.getAllTiles();
     for (var counter = 0; counter < tile_collection.tiles.length; counter++)
     {
       if (tile_collection.tiles[counter].dataitemid == ID)
@@ -37,78 +38,56 @@ var TileService = {
       }
     }
     log(tile_collection, "Tile record removed");
-    StorageDAO.set(this.key, JSON.stringify(tile_collection));
+    StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
   },
-  saveLayout: function(positions){
-    if (!positions)
-      positions = $grid.packery( 'getShiftPositions', 'data-item-id' );
-    StorageDAO.set('dragPositions', JSON.stringify( positions ))
+  getAllTiles: function(){
+    return JSON.parse(StorageDAO.get(this.tiles_key) || this.default);
+  },
+  getAllTilesLayout: function(){
+    return StorageDAO.get(this.layout_key);
+  },
+  setAllTiles: function(tile_collection){
+    StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
+  },
+  // positions optional. Used for forceful import
+  setAllTilesLayout: function(positions){
+    if (!positions) positions = PackaryGrid.getShiftPositions();
+    StorageDAO.set(this.layout_key, JSON.stringify( positions ))
     log(positions,"Layout saved")
-  },
-  getLayout: function(){
-    return StorageDAO.get('dragPositions');
   }
 }
 
-// Create new dataitemid's
-var IdService = {
-  create: function(){
-    var newID = parseInt((StorageDAO.get("ID") || 1));
-    StorageDAO.set("ID", (newID + 1));
-    return newID;
-  },
-  get: function(){
-    return (StorageDAO.get("ID") || 1);
-  },
-  // Forceful overwrite of new ID
-  set: function(Id){
-    StorageDAO.set("ID", Id);
-  }
-}
-
-var NavService = {
+// Events triggered from the nav bar and DOM interactions
+var NavigationService = {
   selectedItem: null,
   selectedColour: null,
-  show: function(item){
-    if (this.selectedItem != null)
-      $(this.selectedItem).toggleClass('selected');
+  selectTile: function(item){
+    // Change highlighted tile
+    $(this.selectedItem).removeClass('selected');
     this.selectedItem = item;
-    $(item).toggleClass('selected');
-
-    var colour = $(item).css("background-color");
-  //  $('#colourSelector').jscolor.fromString(colour);
-
-    document.getElementById('colourSelector').jscolor.fromString(colour);
-
+    $(this.selectedItem).addClass('selected');
+    //Set jsColor ready for editing
+    var currentTileColour = $(this.selectedItem).css("background-color");
+    document.getElementById('colourSelector').jscolor.fromString(currentTileColour);
     $(".navbar").show();
   },
-  hide: function(){
-    if (this.selectedItem != null)
-      $(this.selectedItem).toggleClass('selected');
+  hideNavBar: function(){
+    $(this.selectedItem).removeClass('selected');
     $(".navbar").hide();
   },
   delete: function() {
     TileService.delete($(this.selectedItem).attr("data-item-id"));
-
-    $grid.packery('remove',this.selectedItem);
-    TileService.saveLayout();
+    PackaryGrid.get().packery('remove',this.selectedItem);
+    TileService.setAllTilesLayout();
   },
-  /*previewColour: function(colour){
-    $(this.selectedItem).css('backgroundColor', "#"+colour);
-    this.selectedColour = colour;
-  },*/
-  saveColour: function(colour){
-    $(this.selectedItem).css('backgroundColor', "#"+colour);
-    this.selectedColour = colour;
-    //if (this.selectedColour != null) {
-    log("#"+this.selectedColour, "Saving colour");
-    TileService.update($(this.selectedItem).attr("data-item-id"),"#"+this.selectedColour)
-    //}
+  setTileColour: function(tileColour){
+    $(this.selectedItem).css('backgroundColor', "#"+tileColour);
+    TileService.update($(this.selectedItem).attr("data-item-id"),{colour:'#'+tileColour});
   },
-  saveSize: function(size){
+  setTileSize: function(size){
     $(this.selectedItem).attr('class','grid-item grid-item--'+size);
-    $grid.packery('layout');
-    TileService.update($(this.selectedItem).attr("data-item-id"),this.selectedColour)
+    PackaryGrid.get().packery('layout');
+    TileService.update($(this.selectedItem).attr("data-item-id"),{class:$(this.selectedItem).attr('class')})
   }
 }
 
@@ -116,27 +95,23 @@ var ImportExportService = {
   import: function(contentAsString){
     log(contentAsString,"Import started")
     content = JSON.parse(contentAsString);
-    IdService.set(content.id);
-    TileService.set({tiles: content.tiles});
-    TileService.saveLayout(content.layout);
+    StorageDAO.set("ID", content.id)
+    TileService.setAllTiles({tiles: content.tiles});
+    TileService.setAllTilesLayout(content.layout);
     location.reload();
   },
   export: function(){
-    //const rows = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
-    var content = {tiles: TileService.get().tiles , layout: JSON.parse(TileService.getLayout()), id: IdService.get()};
+    var newID = (StorageDAO.get(TileService.id_key) || 1);
+    var content = {tiles: TileService.get().tiles , layout: JSON.parse(TileService.getAllTilesLayout()), id: newID};
     var contentAsString = JSON.stringify(content);
 
-    /*if (debug) log(contentAsString,"Export JSON");
-    else {*/
-      let csvContent = "data:text/json;charset=utf-8,"+contentAsString;
+    let csvContent = "data:text/json;charset=utf-8,"+contentAsString;
 
-      var encodedUri = encodeURI(csvContent);
-      var link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "export.json");
-      //document.body.appendChild(link); // Required for FF
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "export.json");
 
-      link.click(); // This will download the data file named "my_data.csv".
-    //}
+    link.click();
   }
 }

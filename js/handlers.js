@@ -2,7 +2,7 @@ $("#txtSize").on("change",function(){
   document.documentElement.style.setProperty(`--size`, this.value+'px');
   document.documentElement.style.setProperty(`--size_large`, (this.value * 2)+'px');
   StorageDAO.set('size', this.value)
-  $grid.packery();
+  PackaryGrid.get().packery();
   TileService.saveLayout();
 })
 
@@ -11,7 +11,7 @@ $("#btnAdd").on("click",function(){
   TileService.create(newID);
 
   var $item = $('<div class="grid-item" data-item-id="'+newID+'"></div>');
-  $grid.append( $item ).packery( 'appended', $item );
+  PackaryGrid.get().append( $item ).packery( 'appended', $item );
   $item.each(initGridItem);
 
   TileService.saveLayout();
@@ -34,13 +34,13 @@ $("#btnExport").on("click",function(){
 })
 
 $("#btnCloseNav").on("click",function(){
-    NavService.hide();
+    NavigationService.hideNavBar();
 })
 
 $("#nav-delete").on("click",function(){
-  NavService.delete();
+  NavigationService.delete();
 })
 
 $(".dropdown-size").on("click",function(){
-  NavService.saveSize($(this).attr('data-item-id'));
+  NavigationService.setTileSize($(this).attr('data-item-id'));
 })
