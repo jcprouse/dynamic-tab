@@ -127,8 +127,8 @@ var NavigationService = {
 
 var CssService = {
   setTileScale: function(scale){
-    document.documentElement.style.setProperty(`--size`, scale+'px');
-    document.documentElement.style.setProperty(`--size_large`, (scale * 2)+'px');
+    document.documentElement.style.setProperty('--size', (scale - 2)+'px');
+    document.documentElement.style.setProperty('--size_large', (scale * 2)+'px');
     $("#txtSize").val(scale);
   }
 }

@@ -284,7 +284,7 @@ describe("CssService", function() {
     document.documentElement.style.setProperty('--size','100px');
     document.documentElement.style.setProperty('--size_large', '200px');
     CssService.setTileScale("150");
-    expect(document.documentElement.style.getPropertyValue('--size')).toEqual('150px');
+    expect(document.documentElement.style.getPropertyValue('--size')).toEqual('148px');
     expect(document.documentElement.style.getPropertyValue('--size_large')).toEqual('300px');
     expect(scaleTextbox.val()).toEqual("150");
   });
