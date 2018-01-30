@@ -49,9 +49,9 @@ describe("TileService", function() {
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
-  it("update request can update colour and size", function() {
-    TileService.update(62, JSON.parse('{"colour":"red", "class":"abc"}'));
-    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red"');
+  it("update request can update colour, size and url", function() {
+    TileService.update(62, JSON.parse('{"colour":"red", "class":"abc", "url":"www.test.com"}'));
+    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red","url":"www.test.com"');
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
@@ -111,7 +111,7 @@ describe("NavigationService", function() {
   var jscolorMock;
 
   beforeEach(function(){
-    $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1' style='background-color:#f0f0f0'></div>"));
+    $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1' data-item-url='www.test.com' style='background-color:#f0f0f0'></div>"));
     selectedTile = document.getElementById('testTile');
 
     $(document.body).append($('<input class="jscolor {} form-control mr-sm-2" value="ffffff" id="colourSelector" type="text">'));
@@ -119,12 +119,14 @@ describe("NavigationService", function() {
     document.getElementById('colourSelector').jscolor = jscolorMock;
 
     $(document.body).append($('<div class="navbar"></div>'));
+    $(document.body).append($('<input type="text" id="txtUrl"></input>'));
   });
   afterEach(function(){
     NavigationService.selectedItem = null;
     $("#testTile").remove();
     $("#colourSelector").remove();
     $(".navbar").remove();
+    $("#txtUrl").remove();
   });
 
   it("selecting a tile stores the tile reference and gives a highlight", function() {
@@ -148,15 +150,17 @@ describe("NavigationService", function() {
     $(".navbar").hide();
     NavigationService.selectTile(selectedTile);
     expect(jscolorMock.fromString).toHaveBeenCalledWith($(selectedTile).css("background-color"));
+    expect($("#txtUrl").val()).toEqual("www.test.com");
     expect($(".navbar").is(':visible')).toEqual(true);
   });
 
-  it("hide nav bar removes the nav display and tile highlight", function() {
+  it("hide nav bar removes the nav display, tile reference and tile highlight", function() {
     $("#testTile").addClass('selected');
     NavigationService.selectedItem = selectedTile;
     NavigationService.hideNavBar();
     expect($(selectedTile).hasClass('selected')).toEqual(false);
     expect($(".navbar").is(':visible')).toEqual(false);
+    expect(NavigationService.selectedItem).toEqual(null);
   });
 
   it("hide nav bar handles selectedItem being null", function() {
@@ -185,6 +189,7 @@ describe("NavigationService", function() {
     NavigationService.setTileColour('F0F0F0');
     expect($(selectedTile).css('backgroundColor')).toEqual('rgb(240, 240, 240)');
     expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"colour":"#F0F0F0"}'));
+    expect($(selectedTile).css('backgroundColor')).toEqual('rgb(240, 240, 240)');
   });
 
   it("set tile size request saves size against tile and reformats grid", function() {
@@ -235,6 +240,14 @@ describe("NavigationService", function() {
     expect(GridService.initialiseItem).toHaveBeenCalledWith(newItem.get(0));
     expect(TileService.setAllTilesLayout).toHaveBeenCalled();
   });
+
+  it("set tile url request saves tile redirection address and updates DOM", function() {
+    spyOn(TileService, 'update');
+    NavigationService.selectedItem = selectedTile;
+    NavigationService.setTileUrl('www.test.com');
+    expect($(selectedTile).attr('data-item-url')).toEqual('www.test.com');
+    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"url":"www.test.com"}'));
+  });
 });
 
 describe("GridService", function() {
@@ -268,6 +281,7 @@ describe("GridService", function() {
     expect($('#testTile').triggerHandler('contextmenu')).toEqual(false);
     expect(NavigationService.selectTile).toHaveBeenCalledWith(selectedTile);
   });
+
 });
 
 describe("CssService", function() {

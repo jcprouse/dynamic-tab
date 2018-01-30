@@ -14,7 +14,7 @@ var init = function(){
   for (var counter = 0; counter < tile_collection.length; counter++)
   {
     var tile = tile_collection[counter];
-    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" style="background-color:'+(tile.colour || '#FFFFFF')+'"></div>')
+    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" data-item-url="'+(tile.url || "")+'" style="background-color:'+(tile.colour || '#FFFFFF')+'"></div>')
   }
 
   CssService.setTileScale( TileService.getAllTilesScale() );

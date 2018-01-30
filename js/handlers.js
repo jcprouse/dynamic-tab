@@ -24,6 +24,10 @@ var init_eventHandlers = function(){
     NavigationService.setTileSize($(this).attr('data-item-id'));
   })
 
+  $("#txtUrl").on("change",function(){
+    NavigationService.setTileUrl(this.value);
+  })
+
   $("#fileImport").on("change",function(e){
     var file = e.target.files[0];
     var reader = new FileReader();

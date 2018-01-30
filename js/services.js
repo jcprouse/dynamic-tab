@@ -23,6 +23,8 @@ var TileService = {
           tile_collection.tiles[counter].colour = tile_config.colour;
         if (tile_config.class)
           tile_collection.tiles[counter].class = tile_config.class;
+        if (tile_config.url)
+            tile_collection.tiles[counter].url = tile_config.url;
         break;
       }
     }
@@ -71,6 +73,14 @@ var GridService = {
     // Make draggable
     var draggie = new Draggabilly(item);
     PackaryGrid.get().packery('bindDraggabillyEvents', draggie);
+
+    $(item).on("staticClick",function(){
+      if (!NavigationService.selectedItem){
+        var url = $(item).attr('data-item-url');
+        if (url) window.location.href = url;
+      }
+    });
+
     // Right click event
     $(item).contextmenu(function(){
       NavigationService.selectTile(this);
@@ -95,13 +105,15 @@ var NavigationService = {
     $(this.selectedItem).removeClass('selected');
     this.selectedItem = item;
     $(this.selectedItem).addClass('selected');
-    //Set jsColor ready for editing
-    var currentTileColour = $(this.selectedItem).css("background-color");
-    document.getElementById('colourSelector').jscolor.fromString(currentTileColour);
+    //Set background colour
+    document.getElementById('colourSelector').jscolor.fromString( $(this.selectedItem).css("background-color") );
+    //Set url
+    $("#txtUrl").val( $(this.selectedItem).attr("data-item-url") )
     $(".navbar").show();
   },
   hideNavBar: function(){
     $(this.selectedItem).removeClass('selected');
+    this.selectedItem = null;
     $(".navbar").hide();
   },
   deleteTile: function() {
@@ -122,6 +134,10 @@ var NavigationService = {
     CssService.setTileScale(scale);
     PackaryGrid.get().packery();
     TileService.setAllTilesScale(scale);
+  },
+  setTileUrl: function(tileUrl){
+    $(this.selectedItem).attr('data-item-url',tileUrl);
+    TileService.update($(this.selectedItem).attr("data-item-id"),{url:tileUrl});
   }
 }
 
