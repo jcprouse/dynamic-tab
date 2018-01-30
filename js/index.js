@@ -1,5 +1,5 @@
 var debug = true;
-var resetToStock = true;
+var resetToStock = false;
 
 $( document ).ready(function() {
     init();
@@ -19,6 +19,7 @@ var init = function(){
 
   CssService.setTileScale( TileService.getAllTilesScale() );
 
+  // Initialise grid
   PackaryGrid.set(
     $('.grid').packery({
     itemSelector: '.grid-item',
@@ -30,35 +31,16 @@ var init = function(){
     })
   );
 
-
-
   // Load layout
-  var initPositions = TileService.getAllTilesLayout();
-  PackaryGrid.get().packery( 'initShiftLayout', initPositions, 'data-item-id' );
-  //
+  PackaryGrid.setShiftPositions( TileService.getAllTilesLayout() );
+
+  // Initialise grid items
   PackaryGrid.get().find('.grid-item').each(function(i, item){
     GridService.initialiseItem(item);
   });
 
-  // save drag positions on event
-  //$grid.on( 'dragItemPositioned', function() {
-  PackaryGrid.get().on( 'dragItemPositioned', function() {
-    TileService.setAllTilesLayout();
-  });
-
-  //$grid.on( 'staticClick', '.grid-item', function( item ) {
-  PackaryGrid.get().on( 'staticClick', '.grid-item', function( item ) {
-    var dataItemId = $(item.target.outerHTML).attr("data-item-id");
-    log("ID: "+dataItemId,"Item clicked");
-    //window.location = "https://www.bbc.co.uk"
-  });
+  init_eventHandlers();
 };
-
-
-function update(hex) {
-  $('#colourSelector div').css('backgroundColor', "#"+hex);
-  NavigationService.setTileColour(hex);
-}
 
 var reset = function(){
 

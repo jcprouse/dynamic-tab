@@ -1,35 +1,50 @@
-$("#txtSize").on("change",function(){
-  NavigationService.setTileScale(this.value);
-})
+var init_eventHandlers = function(){
 
-$("#btnCreateTile").on("click",function(){
-  NavigationService.createTile();
-})
+  $("#txtSize").on("change",function(){
+    NavigationService.setTileScale(this.value);
+  })
 
-$("#btnExport").on("click",function(){
-  ImportExportService.export();
-})
+  $("#btnCreateTile").on("click",function(){
+    NavigationService.createTile();
+  })
 
-$("#btnCloseNav").on("click",function(){
-    NavigationService.hideNavBar();
-})
+  $("#btnExport").on("click",function(){
+    ImportExportService.export();
+  })
 
-$("#nav-delete").on("click",function(){
-  NavigationService.deleteTile();
-})
+  $("#btnCloseNav").on("click",function(){
+      NavigationService.hideNavBar();
+  })
 
-$(".dropdown-size").on("click",function(){
-  NavigationService.setTileSize($(this).attr('data-item-id'));
-})
+  $("#nav-delete").on("click",function(){
+    NavigationService.deleteTile();
+  })
 
-$("#fileImport").on("change",function(e){
-  var file = e.target.files[0];
-  var reader = new FileReader();
-  reader.onload = (function(theFile) {
-        return function(e) {
-          ImportExportService.import(e.target.result);
-        };
-      })(file);
+  $(".dropdown-size").on("click",function(){
+    NavigationService.setTileSize($(this).attr('data-item-id'));
+  })
 
-  reader.readAsText(file);
-})
+  $("#fileImport").on("change",function(e){
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = (function(theFile) {
+          return function(e) {
+            ImportExportService.import(e.target.result);
+          };
+        })(file);
+
+    reader.readAsText(file);
+  })
+
+  PackaryGrid.get().on( 'dragItemPositioned', function() {
+    TileService.setAllTilesLayout();
+  });
+
+  //$grid.on( 'staticClick', '.grid-item', function( item ) {
+  PackaryGrid.get().on( 'staticClick', '.grid-item', function( item ) {
+    var dataItemId = $(item.target.outerHTML).attr("data-item-id");
+    log("ID: "+dataItemId,"Item clicked");
+    //window.location = "https://www.bbc.co.uk"
+  });
+
+}

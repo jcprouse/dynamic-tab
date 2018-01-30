@@ -22,4 +22,17 @@ describe("Index", function() {
     init();
     expect(CssService.setTileScale).toHaveBeenCalledWith(142);
   });
+
+  it("initialisation should set grid layout", function() {
+    spyOn(TileService, 'getAllTilesLayout').and.returnValue('fakePositions');
+    spyOn(PackaryGrid, 'setShiftPositions');
+    init();
+    expect(PackaryGrid.setShiftPositions).toHaveBeenCalledWith('fakePositions');
+  });
+
+  it("initialisation should load event handlers", function() {
+    spyOn(window, 'init_eventHandlers');
+    init();
+    expect(window.init_eventHandlers).toHaveBeenCalled();
+  });
 });

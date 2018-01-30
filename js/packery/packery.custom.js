@@ -9,6 +9,9 @@ var PackaryGrid = {
   },
   getShiftPositions: function(){
     return $grid.packery( 'getShiftPositions', 'data-item-id' );
+  },
+  setShiftPositions: function(initPositions){
+    $grid.packery( 'initShiftLayout', initPositions, 'data-item-id' );
   }
 }
 
