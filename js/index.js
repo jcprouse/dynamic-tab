@@ -1,10 +1,11 @@
-//var $grid;
-
 var debug = true;
-var resetToStock = false;
+var resetToStock = true;
 
 $( document ).ready(function() {
+    init();
+});
 
+var init = function(){
   if (resetToStock) reset();
 
   var tile_collection = TileService.getAllTiles().tiles;
@@ -13,18 +14,11 @@ $( document ).ready(function() {
   for (var counter = 0; counter < tile_collection.length; counter++)
   {
     var tile = tile_collection[counter];
-    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" style="background-color:'+tile.colour+'"></div>')
+    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" style="background-color:'+(tile.colour || '#FFFFFF')+'"></div>')
   }
 
+  CssService.setTileScale( TileService.getAllTilesScale() );
 
-  var size = parseInt((StorageDAO.get('size') || "100"));
-  $("#txtSize").val(size);
-
-  document.documentElement.style.setProperty(`--size`, (size-2)+'px');
-  document.documentElement.style.setProperty(`--size_large`, (size * 2)+'px');
-
-  // init Packery
-  //$grid = $('.grid').packery({
   PackaryGrid.set(
     $('.grid').packery({
     itemSelector: '.grid-item',
@@ -36,14 +30,15 @@ $( document ).ready(function() {
     })
   );
 
+
+
+  // Load layout
   var initPositions = TileService.getAllTilesLayout();
-
-  // init layout with saved positions
-  //$grid.packery( 'initShiftLayout', initPositions, 'data-item-id' );
   PackaryGrid.get().packery( 'initShiftLayout', initPositions, 'data-item-id' );
-
-  //$grid.find('.grid-item').each(initGridItem);
-  PackaryGrid.get().find('.grid-item').each(initGridItem);
+  //
+  PackaryGrid.get().find('.grid-item').each(function(i, item){
+    GridService.initialiseItem(item);
+  });
 
   // save drag positions on event
   //$grid.on( 'dragItemPositioned', function() {
@@ -57,27 +52,12 @@ $( document ).ready(function() {
     log("ID: "+dataItemId,"Item clicked");
     //window.location = "https://www.bbc.co.uk"
   });
-
-});
+};
 
 
 function update(hex) {
   $('#colourSelector div').css('backgroundColor', "#"+hex);
   NavigationService.setTileColour(hex);
-}
-
-
-var initGridItem = function( i, itemElem ) {
-  // Make draggable
-  var draggie = new Draggabilly( itemElem );
-  //$grid.packery( 'bindDraggabillyEvents', draggie );
-  PackaryGrid.get().packery( 'bindDraggabillyEvents', draggie );
-  // Right click event
-  $(itemElem).contextmenu(function(){
-    NavigationService.selectTile(this);
-    return false;
-
-  })
 }
 
 var reset = function(){
@@ -107,13 +87,4 @@ var reset = function(){
   StorageDAO.set("ID","20");
   StorageDAO.set("tiles",JSON.stringify(tilecollection));
   StorageDAO.set('dragPositions', "")
-}
-
-var log = function(content,header){
-  if (debug) {
-    if (header){
-      console.log("--- "+header+" ---")
-    }
-    console.log(content);
-  }
 }

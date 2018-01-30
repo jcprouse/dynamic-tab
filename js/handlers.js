@@ -1,20 +1,25 @@
 $("#txtSize").on("change",function(){
-  document.documentElement.style.setProperty(`--size`, this.value+'px');
-  document.documentElement.style.setProperty(`--size_large`, (this.value * 2)+'px');
-  StorageDAO.set('size', this.value)
-  PackaryGrid.get().packery();
-  TileService.saveLayout();
+  NavigationService.setTileScale(this.value);
 })
 
-$("#btnAdd").on("click",function(){
-  var newID = IdService.create();
-  TileService.create(newID);
+$("#btnCreateTile").on("click",function(){
+  NavigationService.createTile();
+})
 
-  var $item = $('<div class="grid-item" data-item-id="'+newID+'"></div>');
-  PackaryGrid.get().append( $item ).packery( 'appended', $item );
-  $item.each(initGridItem);
+$("#btnExport").on("click",function(){
+  ImportExportService.export();
+})
 
-  TileService.saveLayout();
+$("#btnCloseNav").on("click",function(){
+    NavigationService.hideNavBar();
+})
+
+$("#nav-delete").on("click",function(){
+  NavigationService.deleteTile();
+})
+
+$(".dropdown-size").on("click",function(){
+  NavigationService.setTileSize($(this).attr('data-item-id'));
 })
 
 $("#fileImport").on("change",function(e){
@@ -27,20 +32,4 @@ $("#fileImport").on("change",function(e){
       })(file);
 
   reader.readAsText(file);
-})
-
-$("#btnExport").on("click",function(){
-  ImportExportService.export();
-})
-
-$("#btnCloseNav").on("click",function(){
-    NavigationService.hideNavBar();
-})
-
-$("#nav-delete").on("click",function(){
-  NavigationService.delete();
-})
-
-$(".dropdown-size").on("click",function(){
-  NavigationService.setTileSize($(this).attr('data-item-id'));
 })

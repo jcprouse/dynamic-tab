@@ -3,6 +3,7 @@ var TileService = {
   tiles_key: 'tiles',
   layout_key: 'dragPositions',
   id_key: 'ID',
+  scale_key: 'scale',
   default: '{"tiles":[]}',
   create: function(){
     var newID = parseInt((StorageDAO.get(this.id_key) || 1));
@@ -10,6 +11,7 @@ var TileService = {
     var tile_collection = this.getAllTiles();
     tile_collection.tiles.push({dataitemid:newID,class:"grid-item"});
     StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
+    return newID;
   },
   update: function(ID, tile_config){
     var tile_collection = this.getAllTiles();
@@ -46,14 +48,34 @@ var TileService = {
   getAllTilesLayout: function(){
     return StorageDAO.get(this.layout_key);
   },
+  getAllTilesScale: function(){
+    return parseInt(StorageDAO.get(this.scale_key) || 100);
+  },
   setAllTiles: function(tile_collection){
     StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
   },
   // positions optional. Used for forceful import
   setAllTilesLayout: function(positions){
     if (!positions) positions = PackaryGrid.getShiftPositions();
-    StorageDAO.set(this.layout_key, JSON.stringify( positions ))
+    StorageDAO.set(this.layout_key, JSON.stringify(positions))
     log(positions,"Layout saved")
+  },
+  setAllTilesScale: function(scale){
+    StorageDAO.set(this.scale_key,scale);
+    this.setAllTilesLayout();
+  }
+}
+
+var GridService = {
+  initialiseItem: function(item) {
+    // Make draggable
+    var draggie = new Draggabilly(item);
+    PackaryGrid.get().packery('bindDraggabillyEvents', draggie);
+    // Right click event
+    $(item).contextmenu(function(){
+      NavigationService.selectTile(this);
+      return false;
+    });
   }
 }
 
@@ -61,6 +83,13 @@ var TileService = {
 var NavigationService = {
   selectedItem: null,
   selectedColour: null,
+  createTile: function(){
+    var newID = TileService.create();
+    var item = $('<div class="grid-item" data-item-id="'+newID+'"></div>');
+    PackaryGrid.get().append(item).packery('appended',item);
+    TileService.setAllTilesLayout();
+    GridService.initialiseItem(item.get(0));
+  },
   selectTile: function(item){
     // Change highlighted tile
     $(this.selectedItem).removeClass('selected');
@@ -75,7 +104,7 @@ var NavigationService = {
     $(this.selectedItem).removeClass('selected');
     $(".navbar").hide();
   },
-  delete: function() {
+  deleteTile: function() {
     TileService.delete($(this.selectedItem).attr("data-item-id"));
     PackaryGrid.get().packery('remove',this.selectedItem);
     TileService.setAllTilesLayout();
@@ -88,6 +117,19 @@ var NavigationService = {
     $(this.selectedItem).attr('class','grid-item grid-item--'+size);
     PackaryGrid.get().packery('layout');
     TileService.update($(this.selectedItem).attr("data-item-id"),{class:$(this.selectedItem).attr('class')})
+  },
+  setTileScale: function(scale){
+    CssService.setTileScale(scale);
+    PackaryGrid.get().packery();
+    TileService.setAllTilesScale(scale);
+  }
+}
+
+var CssService = {
+  setTileScale: function(scale){
+    document.documentElement.style.setProperty(`--size`, scale+'px');
+    document.documentElement.style.setProperty(`--size_large`, (scale * 2)+'px');
+    $("#txtSize").val(scale);
   }
 }
 

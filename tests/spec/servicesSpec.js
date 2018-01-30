@@ -29,10 +29,10 @@ describe("TileService", function() {
   });
 
   it("create request should append a new tile item into the collection", function() {
-    spy_StorageDAO_get.and.returnValues('41',existingTileCollection);
+      spy_StorageDAO_get.and.returnValues('41',existingTileCollection);
     // Append to the end
     var newTileCollection = existingTileCollection.substring(0,existingTileCollection.length - 2) + ',{"dataitemid":41,"class":"grid-item"}]}';
-    TileService.create();
+    expect(TileService.create()).toEqual(41);
     expect(StorageDAO.get).toHaveBeenCalledWith('ID');
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',newTileCollection);
   });
@@ -86,6 +86,22 @@ describe("TileService", function() {
     spy_StorageDAO_get.and.returnValue("{'id':'456'}");
     expect(TileService.getAllTilesLayout()).toEqual("{'id':'456'}");
     expect(StorageDAO.get).toHaveBeenCalledWith('dragPositions');
+  });
+
+  it("save tile scale request saves the scale and current positions", function() {
+    spyOn(TileService,'setAllTilesLayout');
+    TileService.setAllTilesScale('150');
+    expect(StorageDAO.set).toHaveBeenCalledWith('scale','150');
+    expect(TileService.setAllTilesLayout).toHaveBeenCalled();
+  });
+
+  it("get tile scale request returns scale from storage", function() {
+    spy_StorageDAO_get.and.returnValues('142');
+    expect(TileService.getAllTilesScale()).toEqual(142);
+  });
+  it("get tile scale request will default to 100", function() {
+    spy_StorageDAO_get.and.returnValues('');
+    expect(TileService.getAllTilesScale()).toEqual(100);
   });
 });
 
@@ -157,7 +173,7 @@ describe("NavigationService", function() {
 
     NavigationService.selectedItem="<div data-item-id='123abc'></div>"
 
-    NavigationService.delete();
+    NavigationService.deleteTile();
     expect(TileService.delete).toHaveBeenCalledWith('123abc');
     expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('remove',NavigationService.selectedItem);
     expect(TileService.setAllTilesLayout).toHaveBeenCalled();
@@ -181,5 +197,95 @@ describe("NavigationService", function() {
     expect($(selectedTile).hasClass('grid-item--large')).toEqual(true);
     expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('layout');
     expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large"}'));
+  });
+
+  it("set tile scale request saves the scale", function() {
+    spyOn(TileService, 'setAllTilesScale');
+    NavigationService.setTileScale("150");
+    expect(TileService.setAllTilesScale).toHaveBeenCalledWith("150");
+  });
+
+  it("set tile scale request saves the scale, updates styling and reformats grid", function() {
+    var spy_packaryGridGet_packery = jasmine.createSpyObj('get',['packery']);
+    spyOn(PackaryGrid, 'get').and.returnValue(spy_packaryGridGet_packery);
+    spyOn(CssService, 'setTileScale');
+    spyOn(TileService, 'setAllTilesScale');
+    NavigationService.setTileScale("150");
+    expect(CssService.setTileScale).toHaveBeenCalledWith('150');
+    expect(spy_packaryGridGet_packery.packery).toHaveBeenCalled();
+  });
+
+  it("create new tile request creates a new visual element and saves it", function() {
+    spyOn(TileService, 'create').and.returnValue(41);
+
+
+    var spy_packaryGridGet_append = jasmine.createSpyObj('get',['append']);
+    var spy_packaryGridGetAppend_packery = jasmine.createSpyObj('append',['packery']);
+    spy_packaryGridGet_append.append.and.returnValue(spy_packaryGridGetAppend_packery);
+    spyOn(PackaryGrid, 'get').and.returnValue(spy_packaryGridGet_append);
+
+
+    spyOn(TileService, 'setAllTilesLayout');
+    spyOn(GridService, 'initialiseItem');
+    var newItem = $('<div class="grid-item" data-item-id="41"></div>');
+
+    NavigationService.createTile();
+
+    expect(spy_packaryGridGet_append.append).toHaveBeenCalledWith(newItem);
+    expect(GridService.initialiseItem).toHaveBeenCalledWith(newItem.get(0));
+    expect(TileService.setAllTilesLayout).toHaveBeenCalled();
+  });
+});
+
+describe("GridService", function() {
+
+  var selectedTile;
+
+  beforeEach(function(){
+    $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1'></div>"));
+    selectedTile = document.getElementById('testTile');
+  });
+
+  afterEach(function(){
+    $("#testTile").remove();
+  });
+
+  it("initialise item makes a single tile draggable", function() {
+    var stubDraggabilly = jasmine.createSpy('stubDraggabilly');
+    spyOn(window, 'Draggabilly').and.returnValue(stubDraggabilly);
+
+    var spy_packaryGridGet_packery = jasmine.createSpyObj('get',['packery']);
+    spyOn(PackaryGrid, 'get').and.returnValue(spy_packaryGridGet_packery);
+
+    GridService.initialiseItem(selectedTile);
+    expect(window.Draggabilly).toHaveBeenCalledWith(selectedTile);
+    expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('bindDraggabillyEvents',stubDraggabilly);
+  });
+
+  it("initialise item gives a right click context menu", function() {
+    spyOn(NavigationService, 'selectTile');
+    GridService.initialiseItem(selectedTile);
+    expect($('#testTile').triggerHandler('contextmenu')).toEqual(false);
+    expect(NavigationService.selectTile).toHaveBeenCalledWith(selectedTile);
+  });
+});
+
+describe("CssService", function() {
+
+  var scaleTextbox = $("<input type='text' id='txtSize'></input>");
+  beforeEach(function() {
+    $(document.body).append(scaleTextbox);
+  });
+  afterEach(function(){
+    $(scaleTextbox).remove();
+  });
+
+  it("set tile scale request updates styling propeties", function() {
+    document.documentElement.style.setProperty('--size','100px');
+    document.documentElement.style.setProperty('--size_large', '200px');
+    CssService.setTileScale("150");
+    expect(document.documentElement.style.getPropertyValue('--size')).toEqual('150px');
+    expect(document.documentElement.style.getPropertyValue('--size_large')).toEqual('300px');
+    expect(scaleTextbox.val()).toEqual("150");
   });
 });
