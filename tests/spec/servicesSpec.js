@@ -118,14 +118,14 @@ describe("NavigationService", function() {
     jscolorMock = jasmine.createSpyObj('jscolor',['fromString']);
     document.getElementById('colourSelector').jscolor = jscolorMock;
 
-    $(document.body).append($('<div class="navbar"></div>'));
+    $(document.body).append($('<div id="nav_tiles" class="navbar"></div>'));
     $(document.body).append($('<input type="text" id="txtUrl"></input>'));
   });
   afterEach(function(){
     NavigationService.selectedItem = null;
     $("#testTile").remove();
     $("#colourSelector").remove();
-    $(".navbar").remove();
+    $("#nav_tiles").remove();
     $("#txtUrl").remove();
   });
 
@@ -147,11 +147,20 @@ describe("NavigationService", function() {
 
 
   it("selecting a tile extracts editable properties and shows nav bar", function() {
-    $(".navbar").hide();
+    spyOn(NavigationService, 'hideNavBar');
+    $("#nav_tiles").hide();
     NavigationService.selectTile(selectedTile);
     expect(jscolorMock.fromString).toHaveBeenCalledWith($(selectedTile).css("background-color"));
     expect($("#txtUrl").val()).toEqual("www.test.com");
-    expect($(".navbar").is(':visible')).toEqual(true);
+    expect($("#nav_tiles").is(':visible')).toEqual(true);
+    expect(NavigationService.hideNavBar).not.toHaveBeenCalled();
+  });
+
+  it("right clicking a tile twice closes the nav bar", function() {
+    spyOn(NavigationService, 'hideNavBar');
+    NavigationService.selectedItem = selectedTile;
+    NavigationService.selectTile(selectedTile);
+    expect(NavigationService.hideNavBar).toHaveBeenCalled();
   });
 
   it("hide nav bar removes the nav display, tile reference and tile highlight", function() {
@@ -159,13 +168,13 @@ describe("NavigationService", function() {
     NavigationService.selectedItem = selectedTile;
     NavigationService.hideNavBar();
     expect($(selectedTile).hasClass('selected')).toEqual(false);
-    expect($(".navbar").is(':visible')).toEqual(false);
+    expect($("#nav_tiles").is(':visible')).toEqual(false);
     expect(NavigationService.selectedItem).toEqual(null);
   });
 
   it("hide nav bar handles selectedItem being null", function() {
     NavigationService.hideNavBar();
-    expect($(".navbar").is(':visible')).toEqual(false);
+    expect($("#nav_tiles").is(':visible')).toEqual(false);
   });
 
   it("delete request removes tile and reformats grid", function() {
@@ -248,6 +257,17 @@ describe("NavigationService", function() {
     expect($(selectedTile).attr('data-item-url')).toEqual('www.test.com');
     expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"url":"www.test.com"}'));
   });
+
+  it("set tile image request updates css and resets uploader", function() {
+    $(document.body).append($("<input id='tileImageUpload' type='text' value='abc'></input>"));
+    var tileImageUpload = document.getElementById('tileImageUpload');
+    NavigationService.selectedItem = selectedTile;
+    spyOn(CssService, 'setTileImage');
+    NavigationService.setTileImage('blob');
+    expect(CssService.setTileImage).toHaveBeenCalledWith(selectedTile,'blob');
+    expect($(tileImageUpload).val()).toEqual('');
+    $(tileImageUpload).remove();
+  });
 });
 
 describe("GridService", function() {
@@ -287,11 +307,18 @@ describe("GridService", function() {
 describe("CssService", function() {
 
   var scaleTextbox = $("<input type='text' id='txtSize'></input>");
+  var selectedTile;
+
   beforeEach(function() {
     $(document.body).append(scaleTextbox);
+    $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1'></div>"));
+    $(document.body).append($("<input type='range' min='10' max='100' value='72' id='tileImageSize' />"));
+    selectedTile = document.getElementById('testTile');
   });
   afterEach(function(){
     $(scaleTextbox).remove();
+    $(selectedTile).remove();
+    $("#tileImageSize").remove();
   });
 
   it("set tile scale request updates styling propeties", function() {
@@ -301,5 +328,31 @@ describe("CssService", function() {
     expect(document.documentElement.style.getPropertyValue('--size')).toEqual('148px');
     expect(document.documentElement.style.getPropertyValue('--size_large')).toEqual('300px');
     expect(scaleTextbox.val()).toEqual("150");
+  });
+
+  it("set tile image request sets background", function() {
+    CssService.setTileImage(selectedTile,"blob");
+    expect($(selectedTile).css('background-image')).toEqual('url("'+window.location.href.replace('specrunner.html','blob')+'")');
+  });
+
+  it("set tile image request resizes background based on tile size and scale", function() {
+    CssService.setTileImage(selectedTile,"blob");
+    expect($(selectedTile).css('background-size')).toEqual('72% 72%');
+
+    $(selectedTile).addClass("grid-item--large");
+    CssService.setTileImage(selectedTile,"blob");
+    expect($(selectedTile).css('background-size')).toEqual('72% 72%');
+
+    $(selectedTile).removeClass("grid-item--large").addClass("grid-item--normal");
+    CssService.setTileImage(selectedTile,"blob");
+    expect($(selectedTile).css('background-size')).toEqual('72% 72%');
+
+    $(selectedTile).removeClass("grid-item--normal").addClass("grid-item--horizontal");
+    CssService.setTileImage(selectedTile,"blob");
+    expect($(selectedTile).css('background-size')).toEqual('36% 72%');
+
+    $(selectedTile).removeClass("grid-item--horizontal").addClass("grid-item--vertical");
+    CssService.setTileImage(selectedTile,"blob");
+    expect($(selectedTile).css('background-size')).toEqual('72% 36%');
   });
 });

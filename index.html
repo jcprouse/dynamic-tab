@@ -10,8 +10,9 @@
 </div>
 
 <input type="button" value="Create new tile" id="btnCreateTile"/>
+<img id="preview">
 
-<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+<nav id="nav_tiles" class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a class="nav-link" id="nav-delete" href="#">Delete</a></li>
@@ -27,18 +28,28 @@
       <li class="nav-item">
         <a class="nav-link disabled" href="#">Disabled</a>
       </li>
+      <li><input class="jscolor {onFineChange:'NavigationService.setTileColour(this)'} form-control mr-sm-2" value="ffffff" id="colourSelector" type="text"></li>
+      <li><input class="Form-control mr-sm-2" placeholder="url" id="txtUrl" type="text"></li>
+      <input type="file" id="tileImageUpload"/>
+      <input type="range" min="10" max="100" value="100" class="slider" id="tileImageSize" />
+    </ul>
+    <button class="btn" id="btnCloseNav">Close</button>
+  </div>
+</nav>
+
+<nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark" style="display:none">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
       <li>
         <form class="form-inline my-2 my-lg-0">
           <label>Size baseline</label>
           <input class="form-control mr-sm-2" type="text" id="txtSize">
         </form>
       </li>
-      <li><input class="jscolor {onFineChange:'NavigationService.setTileColour(this)'} form-control mr-sm-2" value="ffffff" id="colourSelector" type="text"></li>
-      <li><input class="Form-control mr-sm-2" placeholder="url" id="txtUrl" type="text"></li>
     </ul>
     <input type="file" id="fileImport"/>
     <button class="btn" id="btnExport">Export</button>
-    <button class="btn" id="btnCloseNav">Close</button>
+    <button class="btn" id="btnCloseNavSettings">Close</button>
   </div>
 </nav>
 
@@ -48,8 +59,13 @@
 <script type="text/javascript" src="js/packery/packery.custom.js"></script>
 <script type="text/javascript" src="js/packery/draggabilly.pkgd.min.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.min.js"></script>
+<script type="text/javascript" src="js/imageTools/ImageTools.js"></script>
 <script type="text/javascript" src="js/functions.js"></script>
-<script type="text/javascript" src="js/services.js"></script>
+<script type="text/javascript" src="js/services/CssService.js"></script>
+<script type="text/javascript" src="js/services/ImportExportService.js"></script>
+<script type="text/javascript" src="js/services/NavigationService.js"></script>
+<script type="text/javascript" src="js/services/TileService.js"></script>
+<script type="text/javascript" src="js/services/GridService.js"></script>
 <script type="text/javascript" src="js/dao.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript" src="js/handlers.js"></script>
