@@ -6,7 +6,7 @@ var CssService = {
   },
   setTileImage: function(tile, imageUrl){
     console.log(tile);
-    $(tile).css('background-image','url('+imageUrl+')');
+    $(tile).css('background-image','url('+window.URL.createObjectURL(imageUrl)+')');
     var scale = parseInt($("#tileImageSize").val());
     if ($(tile).hasClass("grid-item--horizontal"))
       $(tile).css('background-size',(scale / 2) + '% ' + scale + '%');

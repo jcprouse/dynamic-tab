@@ -49,9 +49,9 @@ describe("TileService", function() {
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
-  it("update request can update colour, size and url", function() {
-    TileService.update(62, JSON.parse('{"colour":"red", "class":"abc", "url":"www.test.com"}'));
-    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red","url":"www.test.com"');
+  it("update request can update colour, size, url and image", function() {
+    TileService.update(62, JSON.parse('{"colour":"red", "class":"abc", "url":"www.test.com", "img":"123"}'));
+    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red","url":"www.test.com","img":"123"');
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
@@ -111,6 +111,7 @@ describe("NavigationService", function() {
   var jscolorMock;
 
   beforeEach(function(){
+    spyOn(TileService, 'update');
     $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1' data-item-url='www.test.com' style='background-color:#f0f0f0'></div>"));
     selectedTile = document.getElementById('testTile');
 
@@ -193,7 +194,6 @@ describe("NavigationService", function() {
   });
 
   it("set tile colour request saves colour against tile", function() {
-    spyOn(TileService, 'update');
     NavigationService.selectedItem = selectedTile;
     NavigationService.setTileColour('F0F0F0');
     expect($(selectedTile).css('backgroundColor')).toEqual('rgb(240, 240, 240)');
@@ -204,16 +204,16 @@ describe("NavigationService", function() {
   it("set tile size request saves size against tile and reformats grid", function() {
     var spy_packaryGridGet_packery = jasmine.createSpyObj('get',['packery']);
     spyOn(PackaryGrid, 'get').and.returnValue(spy_packaryGridGet_packery);
-    spyOn(TileService, 'update');
-
     NavigationService.selectedItem = selectedTile;
     NavigationService.setTileSize('large');
     expect($(selectedTile).hasClass('grid-item--large')).toEqual(true);
     expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('layout');
-    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large"}'));
+    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large selected"}'));
   });
 
   it("set tile scale request saves the scale", function() {
+    var spy_packaryGridGet_packery = jasmine.createSpyObj('get',['packery']);
+    spyOn(PackaryGrid, 'get').and.returnValue(spy_packaryGridGet_packery);
     spyOn(TileService, 'setAllTilesScale');
     NavigationService.setTileScale("150");
     expect(TileService.setAllTilesScale).toHaveBeenCalledWith("150");
@@ -251,12 +251,17 @@ describe("NavigationService", function() {
   });
 
   it("set tile url request saves tile redirection address and updates DOM", function() {
-    spyOn(TileService, 'update');
     NavigationService.selectedItem = selectedTile;
     NavigationService.setTileUrl('www.test.com');
     expect($(selectedTile).attr('data-item-url')).toEqual('www.test.com');
     expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"url":"www.test.com"}'));
   });
+
+  it("set tile image request saves image url", function() {;
+    NavigationService.selectedItem = selectedTile;
+    NavigationService.setTileImage('blob');
+    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"img":"blob"}'));
+  })
 
   it("set tile image request updates css and resets uploader", function() {
     $(document.body).append($("<input id='tileImageUpload' type='text' value='abc'></input>"));

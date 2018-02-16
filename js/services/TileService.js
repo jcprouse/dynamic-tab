@@ -14,6 +14,7 @@ var TileService = {
     return newID;
   },
   update: function(ID, tile_config){
+    log(tile_config, "Attempting to update tile record "+ ID);
     var tile_collection = this.getAllTiles();
     for (var counter = 0; counter < tile_collection.tiles.length; counter++)
     {
@@ -24,7 +25,9 @@ var TileService = {
         if (tile_config.class)
           tile_collection.tiles[counter].class = tile_config.class;
         if (tile_config.url)
-            tile_collection.tiles[counter].url = tile_config.url;
+          tile_collection.tiles[counter].url = tile_config.url;
+        if (tile_config.img)
+          tile_collection.tiles[counter].img = tile_config.img;
         break;
       }
     }

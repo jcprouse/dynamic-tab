@@ -1,0 +1,56 @@
+<html>
+<body>
+  <input type='file' id="uploadBannerImage" onchange="readURL(this);" />
+  <img id="bannerImg">
+
+  <img src="" id="tableBanner" />
+
+<input type="button" onclick="save()" value="save"/>
+  <input type="button" onclick="load()" value="load"/>
+  <script>
+
+
+  function readURL(input)
+{
+    document.getElementById("bannerImg").style.display = "block";
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            document.getElementById('bannerImg').src =  e.target.result;
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function save(){
+  bannerImage = document.getElementById('bannerImg');
+  imgData = getBase64Image(bannerImage);
+  localStorage.setItem("imgData", imgData);
+}
+
+function load(){
+
+  var dataImage = localStorage.getItem('imgData');
+  bannerImg = document.getElementById('tableBanner');
+  bannerImg.src = "data:image/png;base64," + dataImage;
+}
+
+function getBase64Image(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    var dataURL = canvas.toDataURL("image/png");
+
+    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+}
+
+</script>
+</body>
+<html>
