@@ -17,9 +17,7 @@ var init = function(){
     var backgroundUrl = "";
     if (tile.img)
     {
-      document.getElementById('preview').src = "data:image/png;base64,"+tile.img;
-      //console.log(tile.img,tile.dataitemid);
-      //backgroundUrl = "; background-image:url("+tile.img+")";
+      backgroundUrl = "; background-image:url(data:image/png;base64,"+tile.img+")";
     }
     $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" data-item-url="'+(tile.url || "")+'" style="background-color:'+(tile.colour || '#FFFFFF')+backgroundUrl+'"></div>')
   }

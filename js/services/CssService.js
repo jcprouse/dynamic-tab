@@ -5,8 +5,7 @@ var CssService = {
     $("#txtSize").val(scale);
   },
   setTileImage: function(tile, imageUrl){
-    console.log(tile);
-    $(tile).css('background-image','url('+window.URL.createObjectURL(imageUrl)+')');
+    $(tile).css('background-image','url('+this._getUrl()+')');
     var scale = parseInt($("#tileImageSize").val());
     if ($(tile).hasClass("grid-item--horizontal"))
       $(tile).css('background-size',(scale / 2) + '% ' + scale + '%');
@@ -14,5 +13,8 @@ var CssService = {
       $(tile).css('background-size', scale + '% '+ (scale / 2) + '%');
     else
       $(tile).css('background-size', scale + '% ' + scale + '%');
+  },
+  _getUrl: function(url){
+    return window.URL.createObjectURL(url);
   }
 }
