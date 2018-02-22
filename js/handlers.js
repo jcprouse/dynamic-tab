@@ -67,19 +67,6 @@ $("#tileImageUpload").on("change",function(e){
     });
   });
 
-/*  $("#tileImageUpload").on("change",function(e){
-    resizeImage({
-      file: this.files[0], maxSize: 200
-    }).then(function (resizedImage) {
-        console.log("upload resized image")
-        document.getElementById('preview').src = window.URL.createObjectURL(resizedImage);
-    }).catch(function (err) {
-        console.error(err);
-    });
-  })*/
-
-
-
   PackaryGrid.get().on( 'dragItemPositioned', function() {
     TileService.setAllTilesLayout();
   });
@@ -91,4 +78,11 @@ $("#tileImageUpload").on("change",function(e){
     //window.location = "https://www.bbc.co.uk"
   });
 
+  $("#tileImageSize").on("input",function(){
+    NavigationService.setTileImageScale($(this).val(),false);
+  });
+
+  $("#tileImageSize").on("change",function(){
+    NavigationService.setTileImageScale($(this).val(),true);
+  });
 }

@@ -1,6 +1,6 @@
 describe("TileService", function() {
 
-  const existingTileCollection = '{"tiles":[{"dataitemid":62,"class":"a-class"},{"dataitemid":73,"class":"second-class"}]}';
+  const existingTileCollection = '{"tiles":[{"dataitemid":62,"class":"a-class","img":{}},{"dataitemid":73,"class":"second-class","img":{}}]}';
   const existingTilePositions = "{'id':'123'}";
 
   var spy_StorageDAO_get;
@@ -49,9 +49,9 @@ describe("TileService", function() {
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
-  it("update request can update colour, size, url and image", function() {
-    TileService.update(62, JSON.parse('{"colour":"red", "class":"abc", "url":"www.test.com", "img":"123"}'));
-    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red","url":"www.test.com","img":"123"');
+  it("update request can update colour, size, url, image and image scale", function() {
+    TileService.update(62, JSON.parse('{"colour":"red", "class":"abc", "url":"www.test.com", "img":{"url":"123","scale":"60"}}'));
+    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red","url":"www.test.com","img":{"url":"123","scale":"60"}}');
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
@@ -275,6 +275,23 @@ describe("NavigationService", function() {
     expect($(tileImageUpload).val()).toEqual('');
     $(tileImageUpload).remove();
   });
+
+  it("set tile image scale updates css", function() {
+    NavigationService.selectedItem = selectedTile;
+    spyOn(CssService, 'setTileImageScale');
+    NavigationService.setTileImageScale('123');
+    expect(CssService.setTileImageScale).toHaveBeenCalledWith(selectedTile,'123');
+    expect(TileService.update).not.toHaveBeenCalled();
+  });
+
+  it("set tile image scale saves the scale if requested", function() {
+    NavigationService.selectedItem = selectedTile;
+    spyOn(CssService, 'setTileImageScale');
+    NavigationService.setTileImageScale('123',false);
+    expect(TileService.update).not.toHaveBeenCalled();
+    NavigationService.setTileImageScale('123',true);
+    expect(TileService.update).toHaveBeenCalledWith(selectedTile,JSON.parse('{"img":{"scale":"www.test.com"}}'));
+  });
 });
 
 describe("GridService", function() {
@@ -341,9 +358,11 @@ describe("CssService", function() {
     var spy_CssService_getUrl = spyOn(CssService,"_getUrl").and.returnValue("blob.url");
     CssService.setTileImage(selectedTile,"blob");
     expect($(selectedTile).css('background-image')).toEqual('url("'+window.location.href.replace('specrunner.html','blob.url')+'")');
+    expect(spy_CssService_getUrl).toHaveBeenCalledWith("blob");
   });
 
   it("set tile image request resizes background based on tile size and scale", function() {
+    var spy_CssService_getUrl = spyOn(CssService,"_getUrl").and.returnValue("blob.url");
     CssService.setTileImage(selectedTile,"blob");
     expect($(selectedTile).css('background-size')).toEqual('72% 72%');
 

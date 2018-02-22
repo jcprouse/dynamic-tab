@@ -1,6 +1,6 @@
 describe("Index", function() {
 
-  const existingTileCollection = JSON.parse('{"tiles":[{"dataitemid":62,"class":"a-class","colour":"#123456","img":"blob:http://localhost/2db7"},{"dataitemid":73,"class":"second-class", "url":"www.test.com"}]}');
+  const existingTileCollection = JSON.parse('{"tiles":[{"dataitemid":62,"class":"a-class","colour":"#123456","img":{"url":"blob:http://localhost/2db7","scale":"123"}},{"dataitemid":73,"class":"second-class", "url":"www.test.com"}]}');
   var grid = $("<div id='grid'></div>");
   beforeEach(function() {
     spyOn(TileService, 'getAllTiles').and.returnValue(existingTileCollection);
@@ -13,7 +13,8 @@ describe("Index", function() {
 
   it("initialisation should load saved tiles", function() {
     init();
-    expect(grid.html()).toEqual('<div class="a-class" data-item-id="62" data-item-url="" style="background-color:#123456; background-image:url(blob:http://localhost/2db7)"></div>'+
+    expect(grid.html()).toEqual('<div class="a-class" data-item-id="62" data-item-url="" style="background-color:#123456;'+
+    ' background-image:url(data:image/png;base64,blob:http://localhost/2db7);background-size:123"></div>'+
     '<div class="second-class" data-item-id="73" data-item-url="www.test.com" style="background-color:#FFFFFF"></div>')
   });
 

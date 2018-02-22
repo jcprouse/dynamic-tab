@@ -9,7 +9,7 @@ var TileService = {
     var newID = parseInt((StorageDAO.get(this.id_key) || 1));
     StorageDAO.set(this.id_key, (newID + 1));
     var tile_collection = this.getAllTiles();
-    tile_collection.tiles.push({dataitemid:newID,class:"grid-item"});
+    tile_collection.tiles.push({dataitemid:newID,class:"grid-item",img:{}});
     StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
     return newID;
   },
@@ -26,8 +26,12 @@ var TileService = {
           tile_collection.tiles[counter].class = tile_config.class;
         if (tile_config.url)
           tile_collection.tiles[counter].url = tile_config.url;
-        if (tile_config.img)
-          tile_collection.tiles[counter].img = tile_config.img;
+        if (tile_config.img){
+          if (tile_config.img.url)
+            tile_collection.tiles[counter].img.url = tile_config.img.url;
+          if (tile_config.img.scale)
+            tile_collection.tiles[counter].img.scale = tile_config.img.scale;
+        }
         break;
       }
     }

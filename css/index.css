@@ -64,7 +64,7 @@ cursor: move;
 
 .grid-item.is-dragging,
 .grid-item.is-positioning-post-drag {
-background: #C90;
+/*background: #C90;*/
 z-index: 2;
 }
 

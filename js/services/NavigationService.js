@@ -53,7 +53,6 @@ var NavigationService = {
     TileService.update($(this.selectedItem).attr("data-item-id"),{url:tileUrl});
   },
   setTileImage: function(imageUrl){
-
     CssService.setTileImage(this.selectedItem, imageUrl);
     $("#tileImageUpload").val("");
 
@@ -70,8 +69,14 @@ var NavigationService = {
       // draw the image onto the canvas
       canvas.getContext("2d").drawImage(this,0,0);
       var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
-      TileService.update($(NavigationService.selectedItem).attr("data-item-id"), {img:dataURL});
+      var bg_scale = $(NavigationService.selectedItem).css('background-size');
+      TileService.update($(NavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
     }
     img.src=bg;
+  },
+  setTileImageScale: function(bg_scale, save){
+    var bg_size_css = CssService.setTileImageScale(this.selectedItem,bg_scale);
+    if (save)
+      TileService.update($(NavigationService.selectedItem).attr("data-item-id"),{img:{scale:bg_size_css}})
   }
 }
