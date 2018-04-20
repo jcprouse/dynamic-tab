@@ -4,9 +4,10 @@ var CssService = {
     document.documentElement.style.setProperty('--size_large', (scale * 2)+'px');
     $("#txtSize").val(scale);
   },
-  setTileImage: function(tile, imageUrl){
-    $(tile).css('background-image','url('+this._getUrl(imageUrl)+')');
-    var scale = $("#tileImageSize").val();
+  setTileImage: function(tile, imageUrl, isBlob, scale){
+    if (!isBlob) imageUrl = this._getUrl(imageUrl);
+    $(tile).css('background-image','url('+imageUrl+')');
+    if (!scale) scale = $("#tileImageSize").val();
     this.setTileImageScale(tile, scale);
   },
   //Scale is a percentage
@@ -18,7 +19,7 @@ var CssService = {
       $(tile).css('background-size', scale + '% '+ (scale / 2) + '%');
     else
       $(tile).css('background-size', scale + '% ' + scale + '%');
-    return $(tile).css('background-size');
+    $(tile).attr("data-item-img-scale",scale);
   },
   _getUrl: function(url){
     return window.URL.createObjectURL(url);

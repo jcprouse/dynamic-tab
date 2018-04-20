@@ -120,6 +120,7 @@ describe("NavigationService", function() {
     document.getElementById('colourSelector').jscolor = jscolorMock;
 
     $(document.body).append($('<div id="nav_tiles" class="navbar"></div>'));
+    $(document.body).append($('<input type="range" min="10" max="100" value="100" id="tileImageSize" />'));
     $(document.body).append($('<input type="text" id="txtUrl"></input>'));
   });
   afterEach(function(){
@@ -128,6 +129,7 @@ describe("NavigationService", function() {
     $("#colourSelector").remove();
     $("#nav_tiles").remove();
     $("#txtUrl").remove();
+    $("#tileImageSize").remove();
   });
 
   it("selecting a tile stores the tile reference and gives a highlight", function() {
@@ -153,8 +155,15 @@ describe("NavigationService", function() {
     NavigationService.selectTile(selectedTile);
     expect(jscolorMock.fromString).toHaveBeenCalledWith($(selectedTile).css("background-color"));
     expect($("#txtUrl").val()).toEqual("www.test.com");
+    expect($("#tileImageSize").val()).toEqual("100");
     expect($("#nav_tiles").is(':visible')).toEqual(true);
     expect(NavigationService.hideNavBar).not.toHaveBeenCalled();
+  });
+
+  it("selecting a tile sets image scale bar if available", function() {
+    $(selectedTile).attr("data-item-img-scale","60")
+    NavigationService.selectTile(selectedTile);
+    expect($("#tileImageSize").val()).toEqual("60");
   });
 
   it("right clicking a tile twice closes the nav bar", function() {
@@ -208,7 +217,7 @@ describe("NavigationService", function() {
     NavigationService.setTileSize('large');
     expect($(selectedTile).hasClass('grid-item--large')).toEqual(true);
     expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('layout');
-    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large selected"}'));
+    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large"}'));
   });
 
   it("set tile scale request saves the scale", function() {
@@ -276,23 +285,14 @@ describe("NavigationService", function() {
     $(tileImageUpload).remove();
   });
 
-  it("set tile image scale updates css", function() {
+  it("set tile image scale updates css and saves the scale", function() {
     NavigationService.selectedItem = selectedTile;
     spyOn(CssService, 'setTileImageScale');
     NavigationService.setTileImageScale('123');
     expect(CssService.setTileImageScale).toHaveBeenCalledWith(selectedTile,'123');
-    expect(TileService.update).not.toHaveBeenCalled();
+    expect(TileService.update).toHaveBeenCalledWith('1',JSON.parse('{"img":{"scale":"123"}}'));
   });
 
-  it("set tile image scale saves the scale if requested", function() {
-    NavigationService.selectedItem = selectedTile;
-    spyOn(CssService, 'setTileImageScale').and.returnValue("456");;
-    NavigationService.setTileImageScale('123',false);
-    expect(TileService.update).not.toHaveBeenCalled();
-    NavigationService.setTileImageScale('123',true);
-    expect(CssService.setTileImageScale).toHaveBeenCalledWith(selectedTile,'123');
-    expect(TileService.update).toHaveBeenCalledWith('1',JSON.parse('{"img":{"scale":"456"}}'));
-  });
 });
 
 describe("GridService", function() {
@@ -382,5 +382,19 @@ describe("CssService", function() {
     $(selectedTile).removeClass("grid-item--horizontal").addClass("grid-item--vertical");
     CssService.setTileImage(selectedTile,"blob");
     expect($(selectedTile).css('background-size')).toEqual('72% 36%');
+  });
+
+  it("set tile image request will not decorate imageurl if it's a blob", function() {
+    var spy_CssService_getUrl = spyOn(CssService,"_getUrl");
+    //var spy_CssService_setTileImageScale = spyOn(CssService,"setTileImageScale");
+    CssService.setTileImage(selectedTile,"blob","true");
+    expect(spy_CssService_getUrl).not.toHaveBeenCalled();
+  });
+
+  it("set tile image request can supply an override scale paramater", function() {
+    var spy_CssService_getUrl = spyOn(CssService,"_getUrl").and.returnValue("blob.url");
+    var spy_CssService_setTileImageScale = spyOn(CssService,"setTileImageScale");
+    CssService.setTileImage(selectedTile,"blob","false","20");
+    expect(spy_CssService_setTileImageScale).toHaveBeenCalledWith(selectedTile,"20");
   });
 });

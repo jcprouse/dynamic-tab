@@ -20,7 +20,8 @@ var NavigationService = {
       //Set background colour
       document.getElementById('colourSelector').jscolor.fromString( $(this.selectedItem).css("background-color") );
       //Set url
-      $("#txtUrl").val( $(this.selectedItem).attr("data-item-url") )
+      $("#txtUrl").val( $(this.selectedItem).attr("data-item-url") );
+      $("#tileImageSize").val( $(this.selectedItem).attr("data-item-img-scale") || "100" )
       $("#nav_tiles").show();
     }
   },
@@ -41,7 +42,7 @@ var NavigationService = {
   setTileSize: function(size){
     $(this.selectedItem).attr('class','grid-item grid-item--'+size+' selected');
     PackaryGrid.get().packery('layout');
-    TileService.update($(this.selectedItem).attr("data-item-id"),{class:$(this.selectedItem).attr('class')})
+    TileService.update($(this.selectedItem).attr("data-item-id"),{class:'grid-item grid-item--'+size})
   },
   setTileScale: function(scale){
     CssService.setTileScale(scale);
@@ -57,7 +58,6 @@ var NavigationService = {
     $("#tileImageUpload").val("");
 
     var bg = $(this.selectedItem).css('background-image').replace('url(','').replace(')','').replace('"','').replace('"','');
-
     // build an image from the dataURL
     var img=new Image();
     //img.crossOrigin='anonymous';
@@ -69,14 +69,13 @@ var NavigationService = {
       // draw the image onto the canvas
       canvas.getContext("2d").drawImage(this,0,0);
       var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
-      var bg_scale = $(NavigationService.selectedItem).css('background-size');
+      var bg_scale = $("#tileImageSize").val();
       TileService.update($(NavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
     }
     img.src=bg;
   },
-  setTileImageScale: function(bg_scale, save){
-    var bg_size_css = CssService.setTileImageScale(this.selectedItem,bg_scale);
-    if (save)
-      TileService.update($(NavigationService.selectedItem).attr("data-item-id"),{img:{scale:bg_size_css}})
+  setTileImageScale: function(bg_scale){
+    CssService.setTileImageScale(this.selectedItem,bg_scale);
+    TileService.update($(NavigationService.selectedItem).attr("data-item-id"),{img:{scale:bg_scale}})
   }
 }

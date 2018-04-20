@@ -15,11 +15,13 @@ var init = function(){
   {
     var tile = tile_collection[counter];
     var backgroundUrl = "";
-    if (tile.img)
+    var element = $('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" data-item-url="'+(tile.url || "")+'" style="background-color:'+(tile.colour || '#FFFFFF')+backgroundUrl+'"></div>');
+    $("#grid").append(element);
+
+    if (tile.img.url)
     {
-      backgroundUrl = "; background-image:url(data:image/png;base64,"+tile.img.url+");background-size:"+tile.img.scale;
+      CssService.setTileImage(element, "data:image/png;base64,"+tile.img.url, true, tile.img.scale);
     }
-    $("#grid").append('<div class="'+tile.class+'" data-item-id="'+tile.dataitemid+'" data-item-url="'+(tile.url || "")+'" style="background-color:'+(tile.colour || '#FFFFFF')+backgroundUrl+'"></div>')
   }
 
   CssService.setTileScale( TileService.getAllTilesScale() );
