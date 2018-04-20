@@ -15,7 +15,7 @@ var init = function(){
   {
     var tile = tile_collection[counter];
     var backgroundUrl = "";
-    if (tile.img.url)
+    if (tile.img)
     {
       backgroundUrl = "; background-image:url(data:image/png;base64,"+tile.img.url+");background-size:"+tile.img.scale;
     }

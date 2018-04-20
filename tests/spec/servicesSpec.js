@@ -29,12 +29,12 @@ describe("TileService", function() {
   });
 
   it("create request should append a new tile item into the collection", function() {
-      spy_StorageDAO_get.and.returnValues('41',existingTileCollection);
+    spy_StorageDAO_get.and.returnValues('41',existingTileCollection);
     // Append to the end
-    var newTileCollection = existingTileCollection.substring(0,existingTileCollection.length - 2) + ',{"dataitemid":41,"class":"grid-item"}]}';
+    var newTileCollection = existingTileCollection.substring(0,existingTileCollection.length - 2) + ',{"dataitemid":41,"class":"grid-item","img":{}}]}';
     expect(TileService.create()).toEqual(41);
     expect(StorageDAO.get).toHaveBeenCalledWith('ID');
-    expect(StorageDAO.set).toHaveBeenCalledWith('tiles',newTileCollection);
+    expect(StorageDAO.set.calls.allArgs()).toEqual([['ID',42],['tiles',newTileCollection]]);
   });
 
   it("create request should store the next new ID", function() {
@@ -51,7 +51,7 @@ describe("TileService", function() {
 
   it("update request can update colour, size, url, image and image scale", function() {
     TileService.update(62, JSON.parse('{"colour":"red", "class":"abc", "url":"www.test.com", "img":{"url":"123","scale":"60"}}'));
-    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class"','"dataitemid":62,"class":"abc","colour":"red","url":"www.test.com","img":{"url":"123","scale":"60"}}');
+    var expectedValue = existingTileCollection.replace('"dataitemid":62,"class":"a-class","img":{}','"dataitemid":62,"class":"abc","img":{"url":"123","scale":"60"},"colour":"red","url":"www.test.com"');
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
@@ -62,7 +62,7 @@ describe("TileService", function() {
 
   it("delete request should remove tile", function() {
     TileService.delete(62);
-    var expectedValue = existingTileCollection.replace('{"dataitemid":62,"class":"a-class"},','');
+    var expectedValue = existingTileCollection.replace('{"dataitemid":62,"class":"a-class","img":{}},','');
     expect(StorageDAO.set).toHaveBeenCalledWith('tiles',expectedValue);
   });
 
@@ -286,11 +286,12 @@ describe("NavigationService", function() {
 
   it("set tile image scale saves the scale if requested", function() {
     NavigationService.selectedItem = selectedTile;
-    spyOn(CssService, 'setTileImageScale');
+    spyOn(CssService, 'setTileImageScale').and.returnValue("456");;
     NavigationService.setTileImageScale('123',false);
     expect(TileService.update).not.toHaveBeenCalled();
     NavigationService.setTileImageScale('123',true);
-    expect(TileService.update).toHaveBeenCalledWith(selectedTile,JSON.parse('{"img":{"scale":"www.test.com"}}'));
+    expect(CssService.setTileImageScale).toHaveBeenCalledWith(selectedTile,'123');
+    expect(TileService.update).toHaveBeenCalledWith('1',JSON.parse('{"img":{"scale":"456"}}'));
   });
 });
 
