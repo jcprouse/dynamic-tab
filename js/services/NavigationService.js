@@ -54,11 +54,12 @@ var NavigationService = {
     TileService.update($(this.selectedItem).attr("data-item-id"),{url:tileUrl});
   },
   setTileImage: function(imageUrl){
-    CssService.setTileImage(this.selectedItem, imageUrl);
+    
     $("#tileImageUpload").val("");
 
-    var bg = $(this.selectedItem).css('background-image').replace('url(','').replace(')','').replace('"','').replace('"','');
-    // build an image from the dataURL
+var bg = window.URL.createObjectURL(imageUrl).replace('url(','').replace(')','').replace('"','').replace('"','');
+
+// build an image from the dataURL
     var img=new Image();
     //img.crossOrigin='anonymous';
     // This will fire when the image source is set
@@ -71,6 +72,7 @@ var NavigationService = {
       var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
       var bg_scale = $("#tileImageSize").val();
       TileService.update($(NavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
+      CssService.setTileImage(NavigationService.selectedItem, dataURL, bg_scale);
     }
     img.src=bg;
   },

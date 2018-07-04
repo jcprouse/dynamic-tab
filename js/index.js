@@ -20,7 +20,7 @@ var init = function(){
 
     if (tile.img.url)
     {
-      CssService.setTileImage(element, "data:image/png;base64,"+tile.img.url, true, tile.img.scale);
+      CssService.setTileImage(element, tile.img.url, tile.img.scale);
     }
   }
 
