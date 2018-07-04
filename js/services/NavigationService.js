@@ -65,8 +65,10 @@ var bg = window.URL.createObjectURL(imageUrl).replace('url(','').replace(')','')
     // This will fire when the image source is set
     img.onload=function(){
       var canvas=document.createElement("canvas");
-      canvas.width = 200;
-      canvas.height = 200;
+      /*canvas.width = 200;
+      canvas.height = 200;*/
+      canvas.width = img.width;
+      canvas.height = img.height;
       // draw the image onto the canvas
       canvas.getContext("2d").drawImage(this,0,0);
       var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");

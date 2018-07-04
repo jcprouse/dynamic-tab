@@ -54,7 +54,7 @@ var init_eventHandlers = function(){
 
 //  document.getElementById('tileImageUpload').onchange = function(evt) {
 $("#tileImageUpload").on("change",function(e){
-    ImageTools.resize(this.files[0], {
+   /* ImageTools.resize(this.files[0], {
         width: 200, // maximum width
         height: 200 // maximum height
     }, function(blob, didItResize) {
@@ -64,7 +64,8 @@ $("#tileImageUpload").on("change",function(e){
         //NavigationService.setTileImage(window.URL.createObjectURL(blob));
         NavigationService.setTileImage(blob);
         // you can also now upload this blob using an XHR.
-    });
+    });*/
+    NavigationService.setTileImage(this.files[0]);
   });
 
   PackaryGrid.get().on( 'dragItemPositioned', function() {

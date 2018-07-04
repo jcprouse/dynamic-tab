@@ -13,22 +13,13 @@ var CssService = {
   setTileImageScale: function(tile, scale){
     scale = parseInt(scale);
 
-   /* if ($(tile).hasClass("grid-item--horizontal"))
-      $(tile).css('background-size',(scale / 2) + '% ' + scale + '%');
-    else if ($(tile).hasClass("grid-item--vertical"))
-      $(tile).css('background-size', scale + '% '+ (scale / 2) + '%');
-    else
-      $(tile).css('background-size', scale + '% ' + scale + '%');
-      */
-   /* $(tile).css('background-size', scale + '%');*/
-
-
     if ($(tile).hasClass("grid-item--horizontal"))
-    $(tile).css('background-size', 'auto ' + scale + '%');
-  else if ($(tile).hasClass("grid-item--vertical"))
-    $(tile).css('background-size', scale + '% '+ 'auto');
-  else
-    $(tile).css('background-size', scale + '% ' + scale + '%');
+    
+      $(tile).css('background-size', scale + '% auto');
+    else if ($(tile).hasClass("grid-item--vertical"))
+      $(tile).css('background-size', 'auto ' + scale + '%');
+    else
+     $(tile).css('background-size', scale + '% ' + scale + '%');
 
 
 
