@@ -67,10 +67,31 @@ var bg = window.URL.createObjectURL(imageUrl).replace('url(','').replace(')','')
       var canvas=document.createElement("canvas");
       /*canvas.width = 200;
       canvas.height = 200;*/
-      canvas.width = img.width;
-      canvas.height = img.height;
+
+      var width = img.width;
+      var height = img.height;
+
+      if (width > height && width > 200) {
+          // width is the largest dimension, and it's too big.
+          height *= 200 / width;
+          width = 200;
+      } else if (height > 200) {
+          // either width wasn't over-size or height is the largest dimension
+          // and the height is over-size
+          width *= 200 / height;
+          height = 200;
+      }
+
+
+
+      canvas.width = width;
+      canvas.height = height;
+
+
       // draw the image onto the canvas
-      canvas.getContext("2d").drawImage(this,0,0);
+      //canvas.getContext("2d").drawImage(this,0,0);
+      canvas.getContext("2d").drawImage(this,0,0,img.width,img.height,0,0,width,height);
+
       var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
       var bg_scale = $("#tileImageSize").val();
       TileService.update($(NavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
