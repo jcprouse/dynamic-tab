@@ -266,25 +266,6 @@ describe("NavigationService", function() {
     expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"url":"www.test.com"}'));
   });
 
-/*  nounittest.txt
- it("set tile image request saves image url", function() {;
-    spyOn(CssService, 'setTileImage');
-    NavigationService.selectedItem = selectedTile;
-    NavigationService.setTileImage('blob');
-    expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"img":"blob"}'));
-  })*/
-
-  it("set tile image request updates css and resets uploader", function() {
-    $(document.body).append($("<input id='tileImageUpload' type='text' value='abc'></input>"));
-    var tileImageUpload = document.getElementById('tileImageUpload');
-    NavigationService.selectedItem = selectedTile;
-    spyOn(CssService, 'setTileImage');
-    NavigationService.setTileImage('blob');
-    expect(CssService.setTileImage).toHaveBeenCalledWith(selectedTile,'blob');
-    expect($(tileImageUpload).val()).toEqual('');
-    $(tileImageUpload).remove();
-  });
-
   it("set tile image scale updates css and saves the scale", function() {
     NavigationService.selectedItem = selectedTile;
     spyOn(CssService, 'setTileImageScale');
@@ -337,7 +318,7 @@ describe("CssService", function() {
   beforeEach(function() {
     $(document.body).append(scaleTextbox);
     $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1'></div>"));
-    $(document.body).append($("<input type='range' min='10' max='100' value='72' id='tileImageSize' />"));
+    //$(document.body).append($("<input type='range' min='10' max='100' value='72' id='tileImageSize' />"));
     selectedTile = document.getElementById('testTile');
   });
   afterEach(function(){
@@ -356,45 +337,29 @@ describe("CssService", function() {
   });
 
   it("set tile image request sets background", function() {
-    var spy_CssService_getUrl = spyOn(CssService,"_getUrl").and.returnValue("blob.url");
-    CssService.setTileImage(selectedTile,"blob");
-    expect($(selectedTile).css('background-image')).toEqual('url("'+window.location.href.replace('specrunner.html','blob.url')+'")');
-    expect(spy_CssService_getUrl).toHaveBeenCalledWith("blob");
+    CssService.setTileImage(selectedTile,"blob",72);
+    expect($(selectedTile).css('background-image')).toEqual('url("data:image/png;base64,blob")');
   });
 
   it("set tile image request resizes background based on tile size and scale", function() {
-    var spy_CssService_getUrl = spyOn(CssService,"_getUrl").and.returnValue("blob.url");
-    CssService.setTileImage(selectedTile,"blob");
+    CssService.setTileImage(selectedTile,"blob",72);
     expect($(selectedTile).css('background-size')).toEqual('72% 72%');
 
     $(selectedTile).addClass("grid-item--large");
-    CssService.setTileImage(selectedTile,"blob");
+    CssService.setTileImage(selectedTile,"blob",72);
     expect($(selectedTile).css('background-size')).toEqual('72% 72%');
 
     $(selectedTile).removeClass("grid-item--large").addClass("grid-item--normal");
-    CssService.setTileImage(selectedTile,"blob");
+    CssService.setTileImage(selectedTile,"blob",72);
     expect($(selectedTile).css('background-size')).toEqual('72% 72%');
 
     $(selectedTile).removeClass("grid-item--normal").addClass("grid-item--horizontal");
-    CssService.setTileImage(selectedTile,"blob");
-    expect($(selectedTile).css('background-size')).toEqual('36% 72%');
+    CssService.setTileImage(selectedTile,"blob",72);
+    expect($(selectedTile).css('background-size')).toEqual('72%');
 
     $(selectedTile).removeClass("grid-item--horizontal").addClass("grid-item--vertical");
-    CssService.setTileImage(selectedTile,"blob");
-    expect($(selectedTile).css('background-size')).toEqual('72% 36%');
+    CssService.setTileImage(selectedTile,"blob",72);
+    expect($(selectedTile).css('background-size')).toEqual('auto 72%');
   });
 
-  it("set tile image request will not decorate imageurl if it's a blob", function() {
-    var spy_CssService_getUrl = spyOn(CssService,"_getUrl");
-    //var spy_CssService_setTileImageScale = spyOn(CssService,"setTileImageScale");
-    CssService.setTileImage(selectedTile,"blob","true");
-    expect(spy_CssService_getUrl).not.toHaveBeenCalled();
-  });
-
-  it("set tile image request can supply an override scale paramater", function() {
-    var spy_CssService_getUrl = spyOn(CssService,"_getUrl").and.returnValue("blob.url");
-    var spy_CssService_setTileImageScale = spyOn(CssService,"setTileImageScale");
-    CssService.setTileImage(selectedTile,"blob","false","20");
-    expect(spy_CssService_setTileImageScale).toHaveBeenCalledWith(selectedTile,"20");
-  });
 });
