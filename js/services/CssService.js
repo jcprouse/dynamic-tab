@@ -1,7 +1,7 @@
 var CssService = {
   setTileScale: function(scale){
-    document.documentElement.style.setProperty('--size', (scale - 2)+'px');
-    document.documentElement.style.setProperty('--size_large', (scale * 2)+'px');
+    document.documentElement.style.setProperty('--size_grid_item', (scale - 2)+'px');
+    document.documentElement.style.setProperty('--size_large_grid_item', (scale * 2)+'px');
     $("#txtSize").val(scale);
   },
   setTileImage: function(tile, imageUrl, scale){

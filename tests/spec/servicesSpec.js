@@ -328,11 +328,11 @@ describe("CssService", function() {
   });
 
   it("set tile scale request updates styling propeties", function() {
-    document.documentElement.style.setProperty('--size','100px');
-    document.documentElement.style.setProperty('--size_large', '200px');
+    document.documentElement.style.setProperty('--size_grid_item','100px');
+    document.documentElement.style.setProperty('--size_large_grid_item', '200px');
     CssService.setTileScale("150");
-    expect(document.documentElement.style.getPropertyValue('--size')).toEqual('148px');
-    expect(document.documentElement.style.getPropertyValue('--size_large')).toEqual('300px');
+    expect(document.documentElement.style.getPropertyValue('--size_grid_item')).toEqual('148px');
+    expect(document.documentElement.style.getPropertyValue('--size_large_grid_item')).toEqual('300px');
     expect(scaleTextbox.val()).toEqual("150");
   });
 

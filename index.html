@@ -3,6 +3,10 @@
   <link href="css/bootstrap.min.css" rel="stylesheet" />
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/index.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css" integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css" integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG" crossorigin="anonymous">
+
 </head>
 <body>
 <div class="grid" id="grid">
@@ -11,7 +15,14 @@
 
 <input type="button" value="Create new tile" id="btnCreateTile"/>
 
-<nav id="nav_tiles" class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+  <i style="display: inline-block;
+  border-radius: 50%;
+  box-shadow: 0px 0px 2px #888;
+  border: 1px solid #888;
+  padding: 0.2em 0.2em; font-size:32px; position:absolute; right:0.3em; bottom: 0.3em" class="fas fa-cog" id="btn_settings"></i>
+
+
+<nav id="nav_tiles" class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark"  style="display:none">
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a class="nav-link" id="nav-delete" href="#">Delete</a></li>
@@ -36,7 +47,7 @@
   </div>
 </nav>
 
-<nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark" style="display:none">
+<nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-light"  style="display:none">
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li>
@@ -58,7 +69,6 @@
 <script type="text/javascript" src="js/packery/packery.custom.js"></script>
 <script type="text/javascript" src="js/packery/draggabilly.pkgd.min.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.min.js"></script>
-<script type="text/javascript" src="js/imageTools/ImageTools.js"></script>
 <script type="text/javascript" src="js/functions.js"></script>
 <script type="text/javascript" src="js/services/CssService.js"></script>
 <script type="text/javascript" src="js/services/ImportExportService.js"></script>
