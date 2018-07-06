@@ -31,6 +31,7 @@ var TileNavigationService = {
     TileService.delete($(this.selectedItem).attr("data-item-id"));
     PackaryGrid.get().packery('remove',this.selectedItem);
     TileService.setAllTilesLayout();
+    this.hideNavBar();
   },
   saveTileClass: function(){
     var clone = $(this.selectedItem).clone(); 
@@ -50,6 +51,7 @@ var TileNavigationService = {
     CssService.setTileScale(scale);
     PackaryGrid.get().packery();
     TileService.setAllTilesScale(scale);
+    TileService.setAllTilesLayout();
   },
   setTileUrl: function(tileUrl){
     $(this.selectedItem).attr('data-item-url',tileUrl);

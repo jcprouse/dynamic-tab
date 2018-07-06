@@ -71,6 +71,5 @@ var TileService = {
   },
   setAllTilesScale: function(scale){
     StorageDAO.set(this.scale_key,scale);
-    this.setAllTilesLayout();
   }
 }

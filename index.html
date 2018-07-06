@@ -13,17 +13,25 @@
   <div class="grid-sizer"></div>
 </div>
 
-<input type="button" value="Create new tile" id="btnCreateTile"/>
-
-  <i class="fas fa-cog" id="btn_settings"></i>
 
 
-<nav id="nav_tiles" class="navbar fixed-bottom navbar-expand-lg navbar-light"  style="display:none">
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item"><a class="nav-link" id="nav-delete" href="#">Delete</a></li>
-      <li class="nav-item dropup">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Size</a>
+<i class="fas fa-cog" id="btn_settings"></i>
+
+<input type="file" id="tileImageUpload"  style="visibility: hidden" />
+<nav id="nav_tiles" class="navbar fixed-bottom navbar-expand-lg navbar-light" style="display:none">
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+      <li class="nav-item active mr-lg-3">
+            
+        <form class="form-inline my-2 my-lg-0">
+            <label class="nav-link">Tile URL</label>
+            <input class="form-control" placeholder="url" id="txtUrl" type="text">
+        </form>
+      </li>
+
+      <li class="nav-item dropup mr-lg-3">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tile size</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item dropdown-size" data-item-id="normal" href="#">Normal</a>
           <a class="dropdown-item dropdown-size" data-item-id="horizontal" href="#">Horizontal</a>
@@ -31,34 +39,77 @@
           <a class="dropdown-item dropdown-size" data-item-id="large" href="#">Large</a>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+
+      <li class="nav-item active mr-lg-3">
+              
+        <form class="form-inline my-2 my-lg-0">
+          <label class="nav-link">Background colour</label>
+          <input class="jscolor {onFineChange:'TileNavigationService.setTileColour(this)'} form-control" value="ffffff" id="colourSelector" type="text" style="width: 6em;">
+        </form>
       </li>
-      <li><input class="jscolor {onFineChange:'TileNavigationService.setTileColour(this)'} form-control mr-sm-2" value="ffffff" id="colourSelector" type="text"></li>
-      <li><input class="Form-control mr-sm-2" placeholder="url" id="txtUrl" type="text"></li>
-      <input type="file" id="tileImageUpload"/>
-      <input type="checkbox" id="chkTileImageConstraint" />
-      <input type="range" min="10" max="100" value="100" class="slider" id="tileImageSize" />
+
+      <li class="nav-item active mr-lg-3">
+        <form class="form-inline my-2 my-lg-0">
+          <label class="btn btn-primary" for="tileImageUpload">Background image</label>
+          <label class="nav-link">Keep proportions?</label>
+          <input type="checkbox" id="chkTileImageConstraint" />
+        </form>
+      </li>
+
+      <li class="nav-item active mr-lg-3">
+          <form class="form-inline my-2 my-lg-0">
+            <label class="nav-link">Background scale</label>
+            <input type="range" min="10" max="100" value="100" class="custom-range" id="tileImageSize" />
+          </form>
+        </li>
+
+      
     </ul>
-    <button class="btn" id="btnCloseNav">Close</button>
+
+    <i class="fas fa-check" id="btnCloseNav"></i>
   </div>
 </nav>
 
-<nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-light"  style="display:none">
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li>
-        <form class="form-inline my-2 my-lg-0">
-          <label>Size baseline</label>
-          <input class="form-control mr-sm-2" type="text" id="txtSize">
-        </form>
-      </li>
-    </ul>
-    <input type="file" id="fileImport"/>
-    <button class="btn" id="btnExport">Export</button>
-    <button class="btn" id="btnCloseNavSettings">Close</button>
-  </div>
-</nav>
+<input type="file" id="fileImport" style="visibility: hidden"/>
+
+
+  <nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="#">DynamicTab</a>
+    
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item active mr-lg-3">
+            <form class="form-inline my-2 my-lg-0">
+                <input type="button" value="Create tile" id="btnCreateTile" class="btn btn-primary"/>
+            </form>
+          </li>
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0 mr-lg-5">
+            <li class="nav-item active mr-lg-3">
+              
+              <form class="form-inline my-2 my-lg-0">
+                  <label class="nav-link">Size baseline</label>
+                  <input class="form-control mr-sm-2" type="text" id="txtSize" style="width: 4em;">
+              </form>
+            </li>
+            <li class="nav-item dropup">
+                <a class="nav-link dropdown-toggle" href="#" id="nav_backup" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Data backup/restoration</a>
+                <div class="dropdown-menu" aria-labelledby="nav_backup">
+                  <label class="dropdown-item" for="fileImport">Import settings</label>
+        
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#" id="btnExport">Export settings</a>
+    
+                </div>
+            </li>
+          </ul>
+        <!--form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form-->
+      </div>
+    </nav>
+
 
 <script type="text/javascript" src="js/jquery/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="js/bootstrap/bootstrap.bundle.min.js"></script>

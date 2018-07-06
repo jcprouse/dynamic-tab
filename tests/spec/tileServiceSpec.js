@@ -88,11 +88,10 @@ describe("TileService", function() {
       expect(StorageDAO.get).toHaveBeenCalledWith('dragPositions');
     });
   
-    it("save tile scale request saves the scale and current positions", function() {
+    it("save tile scale request saves the scale", function() {
       spyOn(TileService,'setAllTilesLayout');
       TileService.setAllTilesScale('150');
       expect(StorageDAO.set).toHaveBeenCalledWith('scale','150');
-      expect(TileService.setAllTilesLayout).toHaveBeenCalled();
     });
   
     it("get tile scale request returns scale from storage", function() {

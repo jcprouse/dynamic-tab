@@ -51,7 +51,13 @@ var init = function(){
 
 var reset = function(){
 
+
   var tilecollection = {tiles:[
+    {dataitemid:1,class:"grid-item grid-item--horizontal", img:{}},
+    {dataitemid:2,class:"grid-item grid-item--vertical", img:{}},
+  ]}
+
+/*  var tilecollection = {tiles:[
     {dataitemid:1,class:"grid-item grid-item--horizontal", img:{}},
     {dataitemid:2,class:"grid-item grid-item--horizontal", img:{}},
     {dataitemid:3,class:"grid-item grid-item--vertical", img:{}},
@@ -71,9 +77,9 @@ var reset = function(){
     {dataitemid:17,class:"grid-item grid-item--horizontal", img:{}},
     {dataitemid:18,class:"grid-item grid-item--vertical", img:{}},
     {dataitemid:19,class:"grid-item", img:{}},
-  ]}
+  ]}*/
 
-  StorageDAO.set("ID","20");
+  StorageDAO.set("ID","3");
   StorageDAO.set("tiles",JSON.stringify(tilecollection));
   StorageDAO.set('dragPositions', "")
 }
