@@ -5,7 +5,7 @@ var GridService = {
     PackaryGrid.get().packery('bindDraggabillyEvents', draggie);
 
     $(item).on("staticClick",function(){
-      if (!NavigationService.selectedItem){
+      if (!TileNavigationService.selectedItem){
         var url = $(item).attr('data-item-url');
         if (url) window.location.href = url;
       }
@@ -13,7 +13,7 @@ var GridService = {
 
     // Right click event
     $(item).contextmenu(function(){
-      NavigationService.selectTile(this);
+      TileNavigationService.selectTile(this);
       return false;
     });
   }

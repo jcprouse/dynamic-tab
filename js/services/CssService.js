@@ -11,12 +11,21 @@ var CssService = {
   //Scale is a percentage
   setTileImageScale: function(tile, scale){
 
-    if ($(tile).hasClass("grid-item--horizontal"))
-      $(tile).css('background-size', scale + '%');
-    else if ($(tile).hasClass("grid-item--vertical"))
-      $(tile).css('background-size', 'auto ' + scale + '%');
-    else
-     $(tile).css('background-size', scale + '% ' + scale + '%');
+    if ($(tile).hasClass("constraint")){
+
+      /*if ($(tile).hasClass("grid-item--vertical"))
+        $(tile).css('background-size', 'auto ' + scale + '%');
+      else 
+        $(tile).css('background-size', scale + '%');*/
+      if ($(tile).hasClass("grid-item--horizontal"))
+        $(tile).css('background-size', scale + '%');
+      else 
+        $(tile).css('background-size', 'auto ' + scale + '%');
+    }
+    else {
+      $(tile).css('background-size', scale + '% ' + scale + '%');
+
+    }
 
     $(tile).attr("data-item-img-scale",scale);
   }

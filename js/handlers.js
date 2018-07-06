@@ -1,11 +1,11 @@
 var init_eventHandlers = function(){
 
   $("#txtSize").on("change",function(){
-    NavigationService.setTileScale(this.value);
+    TileNavigationService.setTileScale(this.value);
   })
 
   $("#btnCreateTile").on("click",function(){
-    NavigationService.createTile();
+    SettingsNavigationService.createTile();
   })
 
   $("#btnExport").on("click",function(){
@@ -13,19 +13,19 @@ var init_eventHandlers = function(){
   })
 
   $("#btnCloseNav").on("click",function(){
-      NavigationService.hideNavBar();
+      TileNavigationService.hideNavBar();
   })
 
   $("#nav-delete").on("click",function(){
-    NavigationService.deleteTile();
+    TileNavigationService.deleteTile();
   })
 
   $(".dropdown-size").on("click",function(){
-    NavigationService.setTileSize($(this).attr('data-item-id'));
+    TileNavigationService.setTileSize($(this).attr('data-item-id'));
   })
 
   $("#txtUrl").on("change",function(){
-    NavigationService.setTileUrl(this.value);
+    TileNavigationService.setTileUrl(this.value);
   })
 
   $("#fileImport").on("change",function(e){
@@ -40,44 +40,32 @@ var init_eventHandlers = function(){
     reader.readAsText(file);
   })
 
-  /*$("#tileImageUpload").on("change",function(e){
-    var file = e.target.files[0];
-    var reader = new FileReader();
-    reader.onload = (function(theFile) {
-          return function(e) {
-            NavigationService.setTileImage(e.target.result);
-          };
-        })(file);
-
-    reader.readAsDataURL(file);
-  })*/
-
-
-$("#tileImageUpload").on("change",function(e){
-    NavigationService.setTileImage(this.files[0]);
+  $("#tileImageUpload").on("change",function(e){
+      TileNavigationService.setTileImage(this.files[0]);
   });
 
   PackaryGrid.get().on( 'dragItemPositioned', function() {
     TileService.setAllTilesLayout();
   });
 
-  //$grid.on( 'staticClick', '.grid-item', function( item ) {
   PackaryGrid.get().on( 'staticClick', '.grid-item', function( item ) {
     var dataItemId = $(item.target.outerHTML).attr("data-item-id");
     log("ID: "+dataItemId,"Item clicked");
-    //window.location = "https://www.bbc.co.uk"
   });
 
   $("#tileImageSize").on("input",function(){
-    NavigationService.setTileImageScale($(this).val(),false);
+    TileNavigationService.setTileImageScale($(this).val(),false);
   });
 
   $("#tileImageSize").on("change",function(){
-    NavigationService.setTileImageScale($(this).val(),true);
+    TileNavigationService.setTileImageScale($(this).val(),true);
   });
 
   $("#btn_settings").on("click",function(){
-    NavigationService.deleteTile();
+    SettingsNavigationService.toggleNavBar();
   })
 
+  $("#chkTileImageConstraint").on("change",function(){
+    TileNavigationService.toggleTileImageConstraint();
+  })
 }

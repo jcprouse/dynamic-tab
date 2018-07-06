@@ -28,7 +28,7 @@ div.grid:after { content: ''; display: block; clear: both; }
 
 div.grid .grid-sizer{ width: var(--size_grid_item); }
 
-div.grid .grid-item {float: left; width: var(--size_grid_item); height: var(--size_grid_item); background: var(colour_grid_item_default_background);
+div.grid .grid-item {float: left; width: var(--size_grid_item); height: var(--size_grid_item); background: var(--colour_grid_item_default_background);
   border: 2px solid var(--colour_grid_item_border); background-repeat:no-repeat; background-position: center; }
 
 div.grid .grid-item--horizontal { width: var(--size_large_grid_item); }
@@ -46,3 +46,8 @@ div.grid .grid-item.is-dragging, div.grid .grid-item.is-positioning-post-drag { 
 .packery-drop-placeholder { outline: 3px dashed hsla(0, 0%, 0%, 0.5); outline-offset: -6px; -webkit-transition: -webkit-transform 0.2s;
    transition: transform 0.2s; }
 /*---------------------------- */
+
+#btn_settings{ display: inline-block; border-radius: 50%; box-shadow: 0px 0px 2px #888; border: 1px solid #888; padding: 0.2em 0.2em; 
+  font-size:24px; position:absolute; right:0.3em; bottom: 0.3em; z-index: 2000; }
+
+#btn_settings.on{ background-color: rgb(255, 153, 0);}

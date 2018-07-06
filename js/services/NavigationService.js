@@ -1,14 +1,7 @@
 // Events triggered from the nav bar and DOM interactions
-var NavigationService = {
+var TileNavigationService = {
   selectedItem: null,
   selectedColour: null,
-  createTile: function(){
-    var newID = TileService.create();
-    var item = $('<div class="grid-item" data-item-id="'+newID+'"></div>');
-    PackaryGrid.get().append(item).packery('appended',item);
-    TileService.setAllTilesLayout();
-    GridService.initialiseItem(item.get(0));
-  },
   selectTile: function(item){
     // Re-selecting the same tile closes the nav
     if (this.selectedItem == item) this.hideNavBar();
@@ -21,6 +14,10 @@ var NavigationService = {
       document.getElementById('colourSelector').jscolor.fromString( $(this.selectedItem).css("background-color") );
       //Set url
       $("#txtUrl").val( $(this.selectedItem).attr("data-item-url") );
+ 
+      if ($(this.selectedItem).hasClass("constraint")) $("#chkTileImageConstraint").prop("checked",true);
+      else $("#chkTileImageConstraint").prop("checked",false);
+
       $("#tileImageSize").val( $(this.selectedItem).attr("data-item-img-scale") || "100" )
       $("#nav_tiles").show();
     }
@@ -35,6 +32,10 @@ var NavigationService = {
     PackaryGrid.get().packery('remove',this.selectedItem);
     TileService.setAllTilesLayout();
   },
+  saveTileClass: function(){
+    var clone = $(this.selectedItem).clone(); 
+    TileService.update($(clone).attr("data-item-id"),{class:$(clone).removeClass("selected").attr("class")});
+  },
   setTileColour: function(tileColour){
     $(this.selectedItem).css('backgroundColor', "#"+tileColour);
     TileService.update($(this.selectedItem).attr("data-item-id"),{colour:'#'+tileColour});
@@ -42,7 +43,8 @@ var NavigationService = {
   setTileSize: function(size){
     $(this.selectedItem).attr('class','grid-item grid-item--'+size+' selected');
     PackaryGrid.get().packery('layout');
-    TileService.update($(this.selectedItem).attr("data-item-id"),{class:'grid-item grid-item--'+size})
+    //TileService.update($(this.selectedItem).attr("data-item-id"),{class:'grid-item grid-item--'+size})
+    this.saveTileClass();
   },
   setTileScale: function(scale){
     CssService.setTileScale(scale);
@@ -85,13 +87,45 @@ var NavigationService = {
 
       var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
       var bg_scale = $("#tileImageSize").val();
-      TileService.update($(NavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
-      CssService.setTileImage(NavigationService.selectedItem, dataURL, bg_scale);
+      TileService.update($(TileNavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
+      CssService.setTileImage(TileNavigationService.selectedItem, dataURL, bg_scale);
     }
     img.src=bg;
   },
   setTileImageScale: function(bg_scale){
     CssService.setTileImageScale(this.selectedItem,bg_scale);
-    TileService.update($(NavigationService.selectedItem).attr("data-item-id"),{img:{scale:bg_scale}})
+    TileService.update($(this.selectedItem).attr("data-item-id"),{img:{scale:bg_scale}})
+  },
+  toggleTileImageConstraint: function(){
+    if ($("#chkTileImageConstraint").is(':checked'))
+      $(this.selectedItem).addClass("constraint")
+    else
+      $(this.selectedItem).removeClass("constraint")
+    
+    this.saveTileClass();
+
+    CssService.setTileImageScale(this.selectedItem,$(this.selectedItem).attr("data-item-img-scale"));
+  }
+}
+
+var SettingsNavigationService = {
+  createTile: function(){
+    var newID = TileService.create();
+    var item = $('<div class="grid-item" data-item-id="'+newID+'"></div>');
+    PackaryGrid.get().append(item).packery('appended',item);
+    TileService.setAllTilesLayout();
+    GridService.initialiseItem(item.get(0));
+  },
+  toggleNavBar: function(){
+    if($("#nav_settings").is(':visible')) this.hideNavBar();
+    else this.showNavBar();
+  },
+  showNavBar: function(){
+    $("#btn_settings").addClass("on");
+    $("#nav_settings").show();
+  },
+  hideNavBar: function(){
+    $("#btn_settings").removeClass("on");
+    $("#nav_settings").hide();
   }
 }
