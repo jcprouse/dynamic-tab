@@ -75,8 +75,7 @@ var TileNavigationService = {
           height *= 200 / width;
           width = 200;
       } else if (height > 200) {
-          // either width wasn't over-size or height is the largest dimension
-          // and the height is over-size
+          // either width wasn't over-size or height is the largest dimension and the height is over-size
           width *= 200 / height;
           height = 200;
       }
@@ -91,6 +90,13 @@ var TileNavigationService = {
       var bg_scale = $("#tileImageSize").val();
       TileService.update($(TileNavigationService.selectedItem).attr("data-item-id"), {img:{url:dataURL,scale:bg_scale}});
       CssService.setTileImage(TileNavigationService.selectedItem, dataURL, bg_scale);
+
+      if (TileService.getTileImageAutoColour() == 1){
+        let rgb = canvas.getContext('2d').getImageData(0,0,1,1).data;
+        let hex = componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+        TileNavigationService.setTileColour(hex);
+      }
+
     }
     img.src=bg;
   },

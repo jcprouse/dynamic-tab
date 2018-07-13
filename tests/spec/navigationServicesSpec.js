@@ -179,6 +179,8 @@ describe("TileNavigationService", function() {
       TileNavigationService.toggleTileImageAutoColour();
       expect(TileService.setTileImageAutoColour).toHaveBeenCalledWith(1);
     });
+
+
   });
 
 

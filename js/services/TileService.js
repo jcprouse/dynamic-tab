@@ -74,7 +74,7 @@ var TileService = {
     StorageDAO.set(this.scale_key,scale);
   },
   getTileImageAutoColour: function(value){
-    return parseInt(StorageDAO.get(this.tileautocolour_key) || 0);
+    return parseInt(StorageDAO.get(this.tileautocolour_key) || 1);
   },
   setTileImageAutoColour: function(value){
     log("TileService.setTileImageAutoColour",value)
