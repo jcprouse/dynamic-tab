@@ -4,6 +4,7 @@ var TileService = {
   layout_key: 'dragPositions',
   id_key: 'ID',
   scale_key: 'scale',
+  tileautocolour_key: 'tac',
   default: '{"tiles":[]}',
   create: function(){
     var newID = parseInt((StorageDAO.get(this.id_key) || 1));
@@ -71,5 +72,12 @@ var TileService = {
   },
   setAllTilesScale: function(scale){
     StorageDAO.set(this.scale_key,scale);
+  },
+  getTileImageAutoColour: function(value){
+    return parseInt(StorageDAO.get(this.tileautocolour_key) || 0);
+  },
+  setTileImageAutoColour: function(value){
+    log("TileService.setTileImageAutoColour",value)
+    StorageDAO.set(this.tileautocolour_key,value);
   }
 }

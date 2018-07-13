@@ -67,5 +67,9 @@ var init_eventHandlers = function(){
 
   $("#chkTileImageConstraint").on("change",function(){
     TileNavigationService.toggleTileImageConstraint();
+  });
+
+  $("#chkTileImageAutoColour").on("change",function(){
+    TileNavigationService.toggleTileImageAutoColour();
   })
 }

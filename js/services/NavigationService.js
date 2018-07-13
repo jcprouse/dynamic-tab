@@ -107,6 +107,13 @@ var TileNavigationService = {
     this.saveTileClass();
 
     CssService.setTileImageScale(this.selectedItem,$(this.selectedItem).attr("data-item-img-scale"));
+  },
+  toggleTileImageAutoColour: function(){
+    log("TileNavigationService.toggleTileImageAutoColour",$("#chkTileImageAutoColour").is(':checked'))
+    if ($("#chkTileImageAutoColour").is(':checked'))
+      TileService.setTileImageAutoColour(1);
+    else
+      TileService.setTileImageAutoColour(0);
   }
 }
 

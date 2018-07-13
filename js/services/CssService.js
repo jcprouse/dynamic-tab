@@ -12,11 +12,6 @@ var CssService = {
   setTileImageScale: function(tile, scale){
 
     if ($(tile).hasClass("constraint")){
-
-      /*if ($(tile).hasClass("grid-item--vertical"))
-        $(tile).css('background-size', 'auto ' + scale + '%');
-      else 
-        $(tile).css('background-size', scale + '%');*/
       if ($(tile).hasClass("grid-item--horizontal"))
         $(tile).css('background-size', scale + '%');
       else 

@@ -6,11 +6,12 @@ var ImportExportService = {
     TileService.setAllTiles({tiles: content.tiles});
     TileService.setAllTilesLayout(content.layout);
     TileService.setAllTilesScale(content.scale);
+    TileService.setTileImageAutoColour(content.tac);
     location.reload();
   },
   export: function(){
     var newID = (StorageDAO.get(TileService.id_key) || 1);
-    var content = {tiles: TileService.getAllTiles().tiles , layout: JSON.parse(TileService.getAllTilesLayout()), id: newID, scale: TileService.getAllTilesScale()};
+    var content = {tiles: TileService.getAllTiles().tiles , layout: JSON.parse(TileService.getAllTilesLayout()), id: newID, scale: TileService.getAllTilesScale(), tac: TileService.getTileImageAutoColour()};
     var contentAsString = JSON.stringify(content);
 
     let csvContent = "data:text/json;charset=utf-8,"+contentAsString;

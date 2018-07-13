@@ -102,5 +102,14 @@ describe("TileService", function() {
       spy_StorageDAO_get.and.returnValues('');
       expect(TileService.getAllTilesScale()).toEqual(100);
     });
+
+    it("save tile image auto colour saves the value", function() {
+      TileService.setTileImageAutoColour(1);
+      expect(StorageDAO.set).toHaveBeenCalledWith(TileService.tileautocolour_key,1);
+    });
+    it("get tile image auto colour gets the value", function() {
+      spy_StorageDAO_get.and.returnValue(1);
+      expect(TileService.getTileImageAutoColour()).toEqual(1);
+    });
   });
   

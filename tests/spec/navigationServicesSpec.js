@@ -14,6 +14,7 @@ describe("TileNavigationService", function() {
       document.getElementById('colourSelector').jscolor = jscolorMock;
   
       $(document.body).append($('<div id="nav_tiles" class="navbar"></div>'));
+      $(document.body).append($('<input type="checkbox" id="chkTileImageAutoColour" />'));
       $(document.body).append($('<input type="range" min="10" max="100" value="100" id="tileImageSize" />'));
       $(document.body).append($('<input type="text" id="txtUrl"></input>'));
     });
@@ -25,6 +26,7 @@ describe("TileNavigationService", function() {
       $("#txtUrl").remove();
       $("#tileImageSize").remove();
       $("#chkTileImageConstraint").remove();
+      $("#chkTileImageAutoColour").remove();
     });
   
     it("selecting a tile stores the tile reference and gives a highlight", function() {
@@ -94,7 +96,7 @@ describe("TileNavigationService", function() {
   
       TileNavigationService.deleteTile();
       expect(TileService.delete).toHaveBeenCalledWith('123abc');
-      expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('remove',TileNavigationService.selectedItem);
+      expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('remove',"<div data-item-id='123abc'></div>");
       expect(TileService.setAllTilesLayout).toHaveBeenCalled();
     });
   
@@ -168,6 +170,15 @@ describe("TileNavigationService", function() {
       expect(CssService.setTileImageScale).toHaveBeenCalledWith(selectedTile,'72');
     });
 
+    it("toggle image auto colour will update Tile Service", function() {
+      spyOn(TileService, 'setTileImageAutoColour');
+      TileNavigationService.toggleTileImageAutoColour();
+      expect(TileService.setTileImageAutoColour).toHaveBeenCalledWith(0);
+      
+      $("#chkTileImageAutoColour").attr("checked",true);
+      TileNavigationService.toggleTileImageAutoColour();
+      expect(TileService.setTileImageAutoColour).toHaveBeenCalledWith(1);
+    });
   });
 
 
