@@ -42,7 +42,9 @@ var TileNavigationService = {
     TileService.update($(this.selectedItem).attr("data-item-id"),{colour:'#'+tileColour});
   },
   setTileSize: function(size){
-    $(this.selectedItem).attr('class','grid-item grid-item--'+size+' selected');
+    if ($(this.selectedItem).hasClass("constraint")) $(this.selectedItem).attr('class','grid-item grid-item--'+size+' constraint selected');
+    else $(this.selectedItem).attr('class','grid-item grid-item--'+size+' selected');
+
     PackaryGrid.get().packery('layout');
     //TileService.update($(this.selectedItem).attr("data-item-id"),{class:'grid-item grid-item--'+size})
     this.saveTileClass();
@@ -54,6 +56,7 @@ var TileNavigationService = {
     TileService.setAllTilesLayout();
   },
   setTileUrl: function(tileUrl){
+    if (!(tileUrl.startsWith("http://") || tileUrl.startsWith("https://"))) tileUrl = "http://"+tileUrl
     $(this.selectedItem).attr('data-item-url',tileUrl);
     TileService.update($(this.selectedItem).attr("data-item-id"),{url:tileUrl});
   },
@@ -92,9 +95,11 @@ var TileNavigationService = {
       CssService.setTileImage(TileNavigationService.selectedItem, dataURL, bg_scale);
 
       if (TileService.getTileImageAutoColour() == 1){
-        let rgb = canvas.getContext('2d').getImageData(0,0,1,1).data;
-        let hex = componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
-        TileNavigationService.setTileColour(hex);
+        var rgb = canvas.getContext('2d').getImageData(0,0,1,1).data;
+        if (rgb[3] === 255){
+          let hex = componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+          TileNavigationService.setTileColour(hex);
+        }
       }
 
     }
@@ -124,6 +129,7 @@ var TileNavigationService = {
 }
 
 var SettingsNavigationService = {
+  bgimage_key:"bgimg",
   createTile: function(){
     var newID = TileService.create();
     var item = $('<div class="grid-item" data-item-id="'+newID+'"></div>');
@@ -142,5 +148,22 @@ var SettingsNavigationService = {
   hideNavBar: function(){
     $("#btn_settings").removeClass("on");
     $("#nav_settings").hide();
+  },
+  setBackgroundImage: function(imageUrl){
+
+    var bg = window.URL.createObjectURL(imageUrl).replace('url(','').replace(')','').replace('"','').replace('"','');
+    var img=new Image();
+    img.onload=function(){
+      var canvas=document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // draw the image onto the canvas
+      canvas.getContext("2d").drawImage(this,0,0,img.width,img.height,0,0,img.width,img.height);
+      var dataURL = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
+      StorageDAO.set(SettingsNavigationService.bgimage_key, dataURL);
+      CssService.setBgImage(dataURL);
+    }
+    img.src=bg;
   }
 }

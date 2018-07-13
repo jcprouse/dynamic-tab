@@ -31,7 +31,7 @@ describe("TileService", function() {
     it("create request should append a new tile item into the collection", function() {
       spy_StorageDAO_get.and.returnValues('41',existingTileCollection);
       // Append to the end
-      var newTileCollection = existingTileCollection.substring(0,existingTileCollection.length - 2) + ',{"dataitemid":41,"class":"grid-item","img":{}}]}';
+      var newTileCollection = existingTileCollection.substring(0,existingTileCollection.length - 2) + ',{"dataitemid":41,"class":"grid-item constraint","img":{}}]}';
       expect(TileService.create()).toEqual(41);
       expect(StorageDAO.get).toHaveBeenCalledWith('ID');
       expect(StorageDAO.set.calls.allArgs()).toEqual([['ID',42],['tiles',newTileCollection]]);

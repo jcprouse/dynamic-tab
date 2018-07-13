@@ -10,7 +10,7 @@ var TileService = {
     var newID = parseInt((StorageDAO.get(this.id_key) || 1));
     StorageDAO.set(this.id_key, (newID + 1));
     var tile_collection = this.getAllTiles();
-    tile_collection.tiles.push({dataitemid:newID,class:"grid-item",img:{}});
+    tile_collection.tiles.push({dataitemid:newID,class:"grid-item constraint",img:{}});
     StorageDAO.set(this.tiles_key, JSON.stringify(tile_collection));
     return newID;
   },

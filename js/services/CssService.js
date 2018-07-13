@@ -1,4 +1,7 @@
 var CssService = {
+  setBgImage: function(imageUrl){
+    $("html").css('background-image','url(data:image/png;base64,'+imageUrl+')');
+  },
   setTileScale: function(scale){
     document.documentElement.style.setProperty('--size_grid_item', (scale - 2)+'px');
     document.documentElement.style.setProperty('--size_large_grid_item', (scale * 2)+'px');

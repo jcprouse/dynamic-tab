@@ -25,7 +25,8 @@ var init = function(){
   }
 
   CssService.setTileScale( TileService.getAllTilesScale() );
-
+  CssService.setBgImage(StorageDAO.get(SettingsNavigationService.bgimage_key));
+  
   if (TileService.getTileImageAutoColour() == 1)  $("#chkTileImageAutoColour").attr("checked",true);
   else $("#chkTileImageAutoColour").removeAttr("checked");
 
@@ -61,28 +62,28 @@ var reset = function(){
   ]}*/
 
   var tilecollection = {tiles:[
-    {dataitemid:1,class:"grid-item grid-item--horizontal", img:{}},
-    {dataitemid:2,class:"grid-item grid-item--horizontal", img:{}},
-    {dataitemid:3,class:"grid-item grid-item--vertical", img:{}},
-    {dataitemid:4,class:"grid-item", img:{}},
-    {dataitemid:5,class:"grid-item", img:{}},
-    {dataitemid:6,class:"grid-item grid-item--large", img:{}},
-    {dataitemid:7,class:"grid-item grid-item--horizontal", img:{}},
-    {dataitemid:8,class:"grid-item grid-item--horizontal", img:{}},
-    {dataitemid:9,class:"grid-item grid-item--vertical", img:{}},
-    {dataitemid:10,class:"grid-item", img:{}},
-    {dataitemid:11,class:"grid-item grid-item--horizontal", img:{}},
-    {dataitemid:12,class:"grid-item grid-item--vertical", img:{}},
-    {dataitemid:13,class:"grid-item", img:{}},
-    {dataitemid:14,class:"grid-item", img:{}},
-    {dataitemid:15,class:"grid-item grid-item--large", img:{}},
-    {dataitemid:16,class:"grid-item", img:{}},
-    {dataitemid:17,class:"grid-item grid-item--horizontal", img:{}},
-    {dataitemid:18,class:"grid-item grid-item--vertical", img:{}},
-    {dataitemid:19,class:"grid-item", img:{}},
+    {dataitemid:1,class:"grid-item grid-item--horizontal constraint", img:{}},
+    {dataitemid:2,class:"grid-item grid-item--horizontal constraint", img:{}},
+    {dataitemid:3,class:"grid-item grid-item--vertical constraint", img:{}},
+    {dataitemid:4,class:"grid-item constraint", img:{}},
+    {dataitemid:5,class:"grid-item constraint", img:{}},
+    {dataitemid:6,class:"grid-item grid-item--large constraint", img:{}},
+    {dataitemid:7,class:"grid-item grid-item--horizontal constraint", img:{}},
+    {dataitemid:8,class:"grid-item grid-item--horizontal constraint", img:{}},
+    {dataitemid:9,class:"grid-item grid-item--vertical constraint", img:{}},
+    {dataitemid:10,class:"grid-item constraint", img:{}},
+    {dataitemid:11,class:"grid-item grid-item--horizontal constraint", img:{}},
+    {dataitemid:12,class:"grid-item grid-item--vertical constraint", img:{}},
+    {dataitemid:13,class:"grid-item constraint", img:{}},
+    {dataitemid:14,class:"grid-item constraint", img:{}},
+    {dataitemid:15,class:"grid-item grid-item--large constraint", img:{}},
+    {dataitemid:16,class:"grid-item constraint", img:{}},
+    {dataitemid:17,class:"grid-item grid-item--horizontal constraint", img:{}},
+    {dataitemid:18,class:"grid-item grid-item--vertical constraint", img:{}},
+    {dataitemid:19,class:"grid-item constraint", img:{}},
   ]}
 
-  StorageDAO.set("ID","3");
+  StorageDAO.set("ID","20");
   StorageDAO.set("tiles",JSON.stringify(tilecollection));
   StorageDAO.set('dragPositions', "")
 }

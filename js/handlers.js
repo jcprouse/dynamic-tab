@@ -41,7 +41,11 @@ var init_eventHandlers = function(){
   })
 
   $("#tileImageUpload").on("change",function(e){
-      TileNavigationService.setTileImage(this.files[0]);
+    TileNavigationService.setTileImage(this.files[0]);
+  });
+
+  $("#bgImageUpload").on("change",function(e){
+    SettingsNavigationService.setBackgroundImage(this.files[0]);
   });
 
   PackaryGrid.get().on( 'dragItemPositioned', function() {

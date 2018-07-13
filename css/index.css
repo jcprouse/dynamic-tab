@@ -2,7 +2,7 @@
   --size_grid_item: 100px;
   --size_large_grid_item: 200px;
 
-  --colour_grid_area: #DDD;
+  --colour_grid_area: /*#DDD*/transparent;
 
   --colour_grid_item_default_background: #FFF;
   --colour_grid_item_border: hsla(0, 0%, 0%, 0.5);
@@ -11,8 +11,9 @@
   --colour_nav_bars: #c6e0f3;
 }
 
+html {background-size: cover}
 * { box-sizing: border-box; }
-body { font-family: sans-serif; }
+body { font-family: sans-serif; background-color: transparent;}
 
 .navbar { background-color: var(--colour_nav_bars); }
 
@@ -29,7 +30,7 @@ div.grid:after { content: ''; display: block; clear: both; }
 div.grid .grid-sizer{ width: var(--size_grid_item); }
 
 div.grid .grid-item {float: left; width: var(--size_grid_item); height: var(--size_grid_item); background: var(--colour_grid_item_default_background);
-  border: 2px solid var(--colour_grid_item_border); background-repeat:no-repeat; background-position: center; }
+  border: 1px solid var(--colour_grid_item_border); background-repeat:no-repeat; background-position: center; }
 
 div.grid .grid-item--horizontal { width: var(--size_large_grid_item); }
 div.grid .grid-item--vertical { height: var(--size_large_grid_item); }

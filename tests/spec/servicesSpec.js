@@ -3,6 +3,7 @@ describe("GridService", function() {
   var selectedTile;
 
   beforeEach(function(){
+    spyOn(StorageDAO, 'set');
     $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1'></div>"));
     selectedTile = document.getElementById('testTile');
   });
@@ -38,6 +39,7 @@ describe("CssService", function() {
   var selectedTile;
 
   beforeEach(function() {
+    spyOn(StorageDAO, 'set');
     $(document.body).append(scaleTextbox);
     $(document.body).append($("<div id='testTile' class='grid-item' data-item-id='1'></div>"));
     //$(document.body).append($("<input type='range' min='10' max='100' value='72' id='tileImageSize' />"));

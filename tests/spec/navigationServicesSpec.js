@@ -4,6 +4,7 @@ describe("TileNavigationService", function() {
     var jscolorMock;
   
     beforeEach(function(){
+      spyOn(StorageDAO, 'set');
       spyOn(TileService, 'update');
       $(document.body).append($("<div id='testTile' class='grid-item constraint selected' data-item-id='1' data-item-url='www.test.com' style='background-color:#f0f0f0'></div>"));
       selectedTile = document.getElementById('testTile');
@@ -115,9 +116,19 @@ describe("TileNavigationService", function() {
       TileNavigationService.setTileSize('large');
       expect($(selectedTile).hasClass('grid-item--large')).toEqual(true);
       expect(spy_packaryGridGet_packery.packery).toHaveBeenCalledWith('layout');
-      expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large"}'));
+      expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large constraint"}'));
     });
   
+    it("set tile size request keeps constaint class if set", function() {
+      TileNavigationService.selectedItem = selectedTile;
+      TileNavigationService.setTileSize('large');
+      expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large constraint"}'));
+
+      $(selectedTile).removeClass('constraint');
+      TileNavigationService.setTileSize('large');
+      expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"class":"grid-item grid-item--large"}'));
+    });
+
     it("set tile scale request saves the scale", function() {
       var spy_packaryGridGet_packery = jasmine.createSpyObj('get',['packery']);
       spyOn(PackaryGrid, 'get').and.returnValue(spy_packaryGridGet_packery);
@@ -139,10 +150,21 @@ describe("TileNavigationService", function() {
     it("set tile url request saves tile redirection address and updates DOM", function() {
       TileNavigationService.selectedItem = selectedTile;
       TileNavigationService.setTileUrl('www.test.com');
-      expect($(selectedTile).attr('data-item-url')).toEqual('www.test.com');
-      expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"url":"www.test.com"}'));
+      expect($(selectedTile).attr('data-item-url')).toEqual('http://www.test.com');
+      expect(TileService.update).toHaveBeenCalledWith("1",JSON.parse('{"url":"http://www.test.com"}'));
     });
   
+    it("set tile url request will prefix http if not already set", function() {
+      TileNavigationService.selectedItem = selectedTile;
+      TileNavigationService.setTileUrl('www.test.com');
+      expect($(selectedTile).attr('data-item-url')).toEqual('http://www.test.com');
+      TileNavigationService.selectedItem = selectedTile;
+      TileNavigationService.setTileUrl('http://www.test2.com');
+      expect($(selectedTile).attr('data-item-url')).toEqual('http://www.test2.com');
+      TileNavigationService.selectedItem = selectedTile;
+      TileNavigationService.setTileUrl('https://www.test3.com');
+      expect($(selectedTile).attr('data-item-url')).toEqual('https://www.test3.com');
+    });
     it("set tile image scale updates css and saves the scale", function() {
       TileNavigationService.selectedItem = selectedTile;
       spyOn(CssService, 'setTileImageScale');
@@ -198,7 +220,8 @@ describe("SettingsNavigationService", function() {
 
     it("create new tile request creates a new visual element and saves it", function() {
         spyOn(TileService, 'create').and.returnValue(41);
-    
+        spyOn(StorageDAO, 'set');
+        
         var spy_packaryGridGet_append = jasmine.createSpyObj('get',['append']);
         var spy_packaryGridGetAppend_packery = jasmine.createSpyObj('append',['packery']);
         spy_packaryGridGet_append.append.and.returnValue(spy_packaryGridGetAppend_packery);

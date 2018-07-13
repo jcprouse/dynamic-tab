@@ -52,7 +52,7 @@
         <form class="form-inline my-2 my-lg-0">
           <label class="btn btn-primary" for="tileImageUpload">Background image</label>
           <label class="nav-link">Keep proportions?</label>
-          <input type="checkbox" id="chkTileImageConstraint" />
+          <input type="checkbox" id="chkTileImageConstraint" checked="checked" />
         </form>
       </li>
 
@@ -63,6 +63,13 @@
           </form>
         </li>
 
+      <li class="nav-item active mr-lg-3">
+        <form class="form-inline my-2 my-lg-0">
+          <input type="button" value="Delete" id="nav-delete" class="btn btn-danger"/>
+        </form>
+      </li>
+
+       
       
     </ul>
 
@@ -72,8 +79,8 @@
 
 <input type="file" id="fileImport" style="visibility: hidden"/>
 
-
-  <nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-light">
+<input type="file" id="bgImageUpload"  style="visibility: hidden" />
+  <nav id="nav_settings" class="navbar fixed-bottom navbar-expand-lg navbar-light" style="display:none">
       <a class="navbar-brand" href="#">DynamicTab</a>
     
       <div class="collapse navbar-collapse">
@@ -81,6 +88,11 @@
           <li class="nav-item active mr-lg-3">
             <form class="form-inline my-2 my-lg-0">
                 <input type="button" value="Create tile" id="btnCreateTile" class="btn btn-primary"/>
+            </form>
+          </li>
+          <li class="nav-item active">
+            <form class="form-inline my-2 my-lg-0">
+              <label class="btn btn-primary" for="bgImageUpload">Background image</label>
             </form>
           </li>
         </ul>

@@ -5,6 +5,7 @@ describe("Index", function() {
   beforeEach(function() {
     spyOn(TileService, 'getAllTiles').and.returnValue(existingTileCollection);
     spyOn(TileService, 'getAllTilesScale').and.returnValue(142);
+    spyOn(StorageDAO, 'set');
     $(document.body).append(grid);
   });
   afterEach(function(){
